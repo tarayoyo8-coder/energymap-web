@@ -35627,6 +35627,12 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
 
   /* ---------- 新题材 → 引擎类别（引擎只认 money/career/love/study/travel/health/lost/lawsuit/home） ---------- */
   var ENGINE_CAT = {
+    /* __mx254 第三批 */
+    offer:'career', layoff:'career', boss:'career', meeting:'career', submission:'career',
+    reply:'love', reconcile:'love', confess:'love', crush:'love',
+    checkup:'health', sleep:'health', quithabit:'health',
+    commute:'travel', event:'travel', luck:'travel', ticket:'travel',
+    customs:'lost', inspection:'lawsuit', zeri:'home', property:'home', kid:'family', visit:'family',
     person:'love',      /* 看人品：六壬主断，用感情类神（六合/天后/玄武 最会说人） */
     personwork:'career',/* 看职场里的人（老板/同事/合伙人） */
     babysex:'health', birth:'health', recover:'health', sport:'health',
@@ -35643,6 +35649,12 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
     friend:'love', fame:'career', abroad:'travel', quitjob:'career', jobhunt:'career', lawsuitwin:'lawsuit', neighbor:'lawsuit'
   };
   var LABEL = {
+    /* __mx254 */
+    offer:['接不接 offer','The offer'], layoff:['饭碗稳不稳','Job security'], boss:['领导的态度','The boss'], meeting:['会议/汇报','Meeting / pitch'], submission:['投稿/申请','Submission'],
+    reply:['会不会回我','Will they reply'], reconcile:['复合/和好','Getting back together'], confess:['表白','Telling them'], crush:['TA 喜不喜欢我','Do they like me'],
+    checkup:['检查结果','Test results'], sleep:['今晚睡眠','Sleep tonight'], quithabit:['戒掉它','Quitting the habit'],
+    commute:['赶得上吗','Making it on time'], event:['活动/聚会','The event'], luck:['今日运气','Today\'s luck'], ticket:['抢票/预约','Tickets / booking'],
+    customs:['清关','Customs'], inspection:['年检/验收','Inspection'], zeri:['挑日子','Picking a day'], property:['买房/卖房','Property'], kid:['孩子今天','The kid today'], visit:['家人来访/见面','Family visit'],
     person:['看人','This person'], personwork:['职场里的人','Someone at work'],
     babysex:['胎儿男女','Baby\'s sex'], birth:['顺产','Delivery'], recover:['病情好转','Recovery'], sport:['运动/活动','Sport / activity'],
     rent:['租房/找房','Renting'], fengshui:['宅运风水','Home feng shui'], paperwork:['办事/审批','Paperwork / approval'],
@@ -35658,8 +35670,9 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
 
   /* ---------- 拒答：亲子 ---------- */
   var REFUSE = [
+    [/(梦见|梦到|做梦|昨晚.{0,4}梦|这个梦|梦里).{0,12}|(dream(ed|t)? (about|of|that)|had a dream|my dream (last night|mean)|what does .{0,20}dream)/i, 'dream'],
     [/是谁的(孩子|骨肉|种)|孩子是(不是)?(他|她|我|老公|前任|谁)的|亲子|whose (baby|child) (is it|is this)|is (the|this|my) (baby|child) (his|mine)|paternity/i, 'paternity'],
-    [/(会不会|要|快|是不是|能不能).{0,6}(死|走|去世|没了|过世|不在了)|活(多久|多长|几年|到几岁|不长)|寿命|阳寿|大限|(will|is|going to).{0,24}(die|pass away|death)|how long (will|do|does).{0,20}(live|left)|life ?span|how many years (left|do i have)/i, 'death'],
+    [/(会不会|要|快|是不是|能不能).{0,6}(死|走|去世|没了|过世|不在了)|活(多久|多长|几年|到几岁|不长)|寿命|阳寿|大限|(will|is|going to).{0,24}\b(die|dies|dying|pass away|death)\b|how long (will|do|does).{0,20}(live|left)|life ?span|how many years (left|do i have)/i, 'death'],
     [/自杀|轻生|想死|不想活|活着没意思|结束生命|自残|割腕|跳楼|(kill|end) (myself|my life)|suicid|self.?harm|don.t want to (live|be alive)|better off dead|hurt myself/i, 'crisis'],
     [/(是不是|会不会|得了|有没有).{0,4}(癌|肿瘤|恶性|抑郁症|艾滋|hiv|绝症|重病|大病|阿尔茨海默|老年痴呆)|(cancer|tumou?r|malignant|hiv|aids|terminal|dementia|alzheimer|depression).{0,15}(do i have|is it|have i got|am i)|(do i have|have i got|is it|am i).{0,15}(cancer|tumou?r|malignant|hiv|aids|terminal|dementia|depressed)/i, 'diagnosis'],
     [/(要不要|该不该|能不能).{0,4}(打胎|流产|堕胎|留(下)?这个孩子|把孩子(留|打)掉)|(打掉|流掉|不要).{0,3}(孩子|这胎)|abortion|terminate (the|this|my) pregnancy|keep (the|this) baby/i, 'abortion']
@@ -35667,6 +35680,68 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
 
   /* ---------- 新题材硬规则：先匹配先赢（越具体越靠前） ---------- */
   var RULES = [
+    /* ===== __mx255 口语/错别字/缩写补充（越具体越靠前） ===== */
+    [/(猫|狗|猫咪|狗狗|宠物|仓鼠|兔子|鹦鹉|乌龟).{0,6}(生病|病了|不吃|走丢|丢了).{0,8}|(my |the |our )?(cat|dog|puppy|kitten|pet|hamster|rabbit|parrot|bunny).{0,20}(get better|be ok|be okay|pull through|come (home|back)|turn up|be found)/i, 'pet', null],
+    [/(手术|开刀|动刀|operation|surgery|the op\b|procedure).{0,20}(顺利|平安|成功|好|be ok|go ok|go well|be fine|okay)|(爸|妈|父|母|老公|老婆|dad|mom|mum|husband|wife|father|mother)s?.{0,10}(手术|开刀|operation|surgery)/i, 'surgery', null],
+    [/(住院|病房|icu|hospital).{0,12}(好转|好点|好起来|improve|get better|feel better|be ok)|(improve|get better|feel better|recover|be better).{0,16}(this week|today|tomorrow|soon|by)|(疼|痛|酸|胀|咳|烧|晕).{0,6}(缓一缓|缓解|缓|好点|好些|减轻)/i, 'recover', '转机'],
+    [/(体检|复查|检查|化验|报告).{0,6}(有没有问题|好不好|正常|没事)/i, 'checkup', null],
+    [/(出版社|编辑|杂志|平台|期刊|评委|评审).{0,8}(要|收|签|通过|录|选|采用)|(publisher|editor|agent|magazine|journal|committee|reviewer|jury).{0,20}(take|want|accept|say yes|pick|choose|go for|sign)|(manuscript|book|novel|story|paper|article|application|proposal|grant|script|portfolio).{0,16}(accept|approved|get in|go through|picked|chosen|selected)/i, 'submission', null],
+    [/(面试|面谈|interview|interviewer).{0,30}(稳|过|成|喜欢我|like me|go ok|go okay|go well|pass|nail|get the job|hire me)|interview (tmrw|tomorrow|today|tmr)/i, 'interview', null],
+    [/(工资|薪水|薪资|月薪|年薪|待遇).{0,6}(涨|加|提|升)|(涨|加|提).{0,3}(工资|薪|钱)|(pay|salary|wage|comp).{0,8}(bump|raise|rise|increase|go up)|(a |the |my )?raise( today| this month| soon)?\s*\?*\s*$|get (a |the )?raise/i, 'raise', null],
+    [/升值|升职|晋升|提拔|(team lead|lead role|senior|manager) (role|position|job)|get the role|the promotion|be promoted|get promoted|move up/i, 'promotion', null],
+    [/(招|聘|找).{0,4}(得到|到|得着).{0,4}(人|员工|合适的人|靠谱的人|合伙人|搭档)|招人|招聘.{0,6}(顺|成|到)|(business partner|co-?founder|good hire|find (someone|people) to (hire|join)|hire (someone|the right))/i, 'hire', null],
+    [/(房东|中介).{0,8}(同意|降价|减租|降租|续约|续租|退押金|好说话)|(便宜|合适|满意|心仪).{0,6}(房子|房源|住处|公寓)|看房.{0,8}(合适|满意|定|成)|(房子|房源).{0,14}(定下来|定得下|签下来|租下来)|apartment hunting|flat hunting|house hunting|find one (today|this week|soon)|landlord.{0,20}(accept|approve|say yes|lower|reduce|renew)/i, 'rent', null],
+    [/(房贷|车贷|贷款|贷).{0,4}(过|批|下来|通过|能过)|mortgage (approval|approved|go through)|loan (approval|approved)/i, 'loan', null],
+    [/(科目[一二三四]|路考|驾考|笔试|口试|机考|模拟考|期中|期末|统考|会考|资格考|考级|考编|考公|考研|考证).{0,8}(过|通过|考好|行|稳|成)|(do ok|do okay|do well|do fine|pass|ace|be ok).{0,20}(test|exam|quiz|final|midterm)|(?<!results? )(test|exam|quiz)(?! results?).{0,16}(be ok|be okay|go ok|go well|be fine)|(kid|son|daughter|child).{0,16}(test|exam)/i, 'exam', null],
+    [/(填志愿|报志愿|选(啥|什么|哪个|哪门)专业|专业.{0,4}(好|选)|学.{1,8}还是学.{1,8})|(cs|computer science|law|medicine|med|engineering|nursing|business|finance|art|design|psychology|economics)\b.{0,6}\bor\b.{0,20}(\?|$)|(which|what).{0,6}(major|degree|course|field).{0,10}(pick|choose|study|do)/i, 'major', '选择'],
+    [/(录取|录不录|被录).{0,8}|(university|college|school|program|programme).{0,16}(accept me|take me|let me in|admit)|get into|be admitted/i, 'admission', null],
+    [/捡到钱|横财|意外.{0,3}(收入|钱)|白得|free money|found money|come into (some )?money|unexpected (cash|money)/i, 'windfall', null],
+    [/(给我|打|转|借).{0,3}(钱|生活费|零花钱|零用钱|学费)|(give|send|lend|wire|transfer) me.{0,10}(money|cash|spending money|allowance|pocket money)|spending money|pocket money|allowance/i, 'askmoney', null],
+    [/欠我.{0,6}(钱|款|的).{0,8}(还|要回)|(欠的钱|欠款|货款|尾款|工资).{0,6}(还|到账|要回|拿回)|pay me back|owes? me|get paid (back|what)/i, 'debt', null],
+    [/(get|want|have) my money back|money back from|(被骗|骗走|骗去).{0,6}(钱|款).{0,8}(要|拿|追|回)/i, 'debt', null],
+    [/(在外面有人|外面有人|有人了|有外遇|外遇|劈腿|出轨|背着我|偷吃|藏私房钱).{0,8}|cheat(ing|s|ed)? on me|is (he|she|my (husband|wife|bf|gf|boyfriend|girlfriend|partner)) cheating|have someone else|seeing someone else|another (woman|man|guy|girl)|\bscam(mer)?\b|catfish|fake profile/i, 'person', '真假'],
+    [/(生的时候|生产|分娩|生娃|生宝宝|生孩子那天|待产).{0,8}(顺|平安|安全|好)|(the birth|delivery|labou?r|giving birth|natural (birth|delivery)|c-?section).{0,20}(go (well|ok|smooth)|be (ok|fine|smooth)|smooth)/i, 'birth', null],
+    [/(瘦|减).{0,3}(\d+|[一二三四五六七八九十两]+).{0,2}(斤|公斤|kg|磅)|lose \d+ ?(pounds|lbs|kg|kilos)|(the|my|this) diet.{0,10}(work|stick)|drop (a|some|the) (weight|pounds)|get (lean|in shape|fit) (by|this|before)/i, 'diet', null],
+    [/(会|会议|例会|周会|晨会).{0,4}(开好|开得好|开得顺|顺利)|(the )?meeting.{0,12}(go ok|go okay|go well|go smooth|be fine|be ok)|(pitch|demo|presentation).{0,12}(land|go ok|go well|work)/i, 'meeting', null],
+    [/(是不是|是否|会不会|有没有).{0,4}(喜欢我|爱我|在乎我|想我|对我有)|(does|do|is|are).{0,10}(like me|into me|love me|miss me|fancy me|have a crush on me|interested in me|feel the same|feelings for me)/i, 'crush', '真假'],
+    [/(生日会|聚会|派对|活动|婚礼|酒席|饭局|团建|开业|发布会|演出|摆摊|签售|直播).{0,10}(人多|人会多|来人|来的人|热闹|顺利|顺|成功|好|办成|办得成|搞成)|(people|folks|friends|guests|anyone).{0,12}(come|turn up|show up).{0,16}(party|event|wedding|launch|show|gig|thing|birthday)|(party|wedding|event|launch|show|reunion|dinner|birthday).{0,20}(go smooth|go ok|go well|turn out|work out|be fun|be good|be a hit)/i, 'event', null],
+    [/(出去玩|出门|出行|外出|旅行|旅游|自驾|开车|骑车|坐船|游泳|下水).{0,8}(有事|出事|安全|平安|危险)|(safe to|is it safe|be safe|stay safe|dangerous).{0,16}(drive|driving|go|travel|fly|swim|hike|ride|walk|tonight|today)|(drive|driving|flight|trip|ride|walk|hike|swim|road).{0,12}(safe|dangerous|ok tonight)/i, 'safety', null],
+    [/(招|得到|找到).{0,4}合适的人/i, 'hire', null],
+    [/(跳槽|换工作|换个工作|换公司).{0,6}|switch(ing)? jobs|change jobs|move to (another|a new) (company|job)|take (the|a) new job/i, 'offer', '该不该'],
+    [/(前任|前男友|前女友|前夫|前妻|ex).{0,10}(回头|回来|复合|找我|联系我|come back|coming back|reach out|text)|(get|win) (him|her|them|my ex) back/i, 'reconcile', null],
+    [/(赶|赶得上|赶上|来得及|来不及|迟到|误).{0,6}(车|班车|高铁|火车|地铁|飞机|航班|公交|校车|上班|打卡|会|课)|catch (the|my|a) \d+ ?(am|pm|o'?clock)? ?(train|bus|flight|ferry|plane)|make (the|my) \d+ ?(am|pm)?|be late (for|to)|get to .{0,20} (on time|in time)|running late/i, 'commute', null],
+    [/(挂|约|预约|抢|排).{0,3}(得上|到|得到).{0,4}(号|专家号|门诊|票|位|座|名额|床位)|(get|book|score|snag|land).{0,8}(a |an |the )?(doctor'?s? |dentist |gp |hospital |vet )?(appointment|slot|booking|reservation|table|ticket|tickets|seat|spot|place)/i, 'ticket', null],
+    [/(公婆|婆婆|岳父母|丈母娘|亲戚|爸妈|父母|长辈|家里人|客人).{0,6}(来|来住|来访|上门|见面|聚|一起|相处).{0,10}(吵|矛盾|顺|好|开心|尴尬|相处)|回(娘家|婆家|老家).{0,6}(顺|好|吵|开心)|(in-? ?laws?|parents|relatives|family|mother in law|father in law).{0,16}(visit|visiting|coming|stay(ing)?|over|here).{0,20}(ok|okay|fine|go well|smooth|peace|drama|fight)|(thanksgiving|christmas|xmas|new year|holiday|dinner).{0,10}(with|at).{0,20}(ok|okay|fine|go well|smooth|drama)/i, 'visit', null],
+    [/(回我|回复我|理我|回消息|回信|回电|联系我).{0,4}(吗|么|不|嘛|没)|(没|不).{0,4}(回|理|联系).{0,16}(会|还会|能).{0,6}(回|理|联系)|(hasn'?t|hasnt|didn'?t|didnt|never|no) (texted|replied|messaged|called|answered|written).{0,30}(reply|text|answer|call|respond|write|get back)|(will|gonna|going to) (he|she|they) (reply|respond|text|answer|call|write)( back| me)?/i, 'reply', null],
+    [/(公司|厂里|部门|单位|老板).{0,8}(裁人|裁员|优化|缩编|在裁).{0,10}(轮到|会不会|我|安全|稳)|(company|they|we|work).{0,16}(cutting|cuts|letting people go|layoffs?|laying off|downsizing|restructuring).{0,24}(safe|me|my job|next|affected|ok)|am i safe|is my job safe/i, 'layoff', null],
+    [/(噪音|噪声|吵|装修声|狗叫).{0,10}(解决|处理|停|好|消停|安静)|(noise|racket|banging|barking|music).{0,20}(upstairs|next door|neighbou?r|downstairs|stop|sorted|resolved|end|quiet)|neighbou?rs?.{0,16}(stop|quiet|sort|behave|calm down|back off)/i, 'neighbor', null],
+    [/(官司|诉讼|仲裁|开庭|庭审|案子|上诉).{0,8}(赢|胜|有戏|胜算|有希望|翻盘)|chance in court|win in court|court.{0,16}(win|chance|go my way|favou?r)|(win|chance).{0,12}(court|case|lawsuit|appeal|hearing)/i, 'lawsuitwin', null],
+    [/(找到|找着|拿到|得到|有).{0,4}(工作|活儿|活|岗位|offer).{0,6}(吗|么|不|嘛)|(get|land|find).{0,6}(a |the |any )?(job|work|gig|position|role)( this| by| soon| in)/i, 'jobhunt', null],
+    [/(约会|相亲|见面|见网友|第一次见).{0,8}(成|顺|好|聊得来|靠谱)|(my |the |our |this )?date.{0,26}(go (well|ok|okay|good|smooth)|be (fun|nice|ok)|work out|turn out)/i, 'date', null],
+    [/(跑步|夜跑|晨跑|健身|撸铁|游泳|打球|踢球|骑行|爬山|徒步|瑜伽|拳击|滑雪|冲浪).{0,8}(合适|行|可以|去不去|要不要|会受伤|适合)|(go for a run|run tonight|go running|hit the gym|workout|work out|lift|swim|play (football|soccer|basketball|tennis|golf|badminton)|hike|hiking|yoga|cycle|ride).{0,16}(today|tonight|tomorrow|ok|good idea|should i|safe)|should i (go for a run|work out|hit the gym|play|hike|swim|cycle)/i, 'sport', '该不该'],
+    [/(今天|今日|这一天)(顺不顺|顺利吗|顺利不|会不会顺|过得好|会顺吗)|(my day|today|the day).{0,4}(go smoothly|go smooth|go well|go ok|go okay|go my way|be good|be fine)/i, 'luck', null],
+    /* ===== __mx254 第三批：越具体越靠前 ===== */
+    [/(体检|复查|筛查|化验|B超|核磁|磁共振|CT|活检|穿刺|病理|检查).{0,8}(结果|报告|好不好|正常|没事|顺利|有没有问题|过关)|(test results?|scan|biopsy|blood ?work|blood test|check[- ]?up|mri|ct scan|ultrasound|screening|lab results?|pathology|smear|mammogram).{0,24}(ok|okay|fine|good|clear|normal|come back|be bad|worry|worried|clean)/i, 'checkup', null],
+    [/(投稿|稿子|稿件|书稿|小说|申请书|申报|课题|标书|提案|基金|奖学金|论文|简历).{0,10}(过|通过|中|录用|接受|批|批准|中标|成功|回音|回复|要)|(manuscript|submission|proposal|grant|application|paper|query letter|query|book deal|agent|publisher|editor|scholarship|funding|residency|fellowship).{0,28}(accept|approve|get in|go through|succeed|hear back|land|win|get (the|a|an)|say yes|come through|sign me)/i, 'submission', null],
+    [/(接|签|去|拿|要|接受).{0,4}(这个|这份|那个|那份|新)?(offer|工作邀请|合同|聘书|录用通知|新工作|这家)|offer.{0,6}(要不要|该不该|接不接|值不值)|(要不要|该不该|值不值得).{0,4}(跳槽|换工作|接)|(take|accept|sign|turn down|decline).{0,14}(offer|contract|job at|new job|the job)|(the|this|their|that) offer/i, 'offer', '该不该'],
+    [/(买房|购房|卖房|换房|房价|置业|学区房|二手房|新房|楼盘|交房|过户|这套房|房子.{0,4}(买|卖|入手|出手|值不值|能不能买))|(buy (a|the|this|our) (house|home|flat|apartment|condo|property|place)|sell (my|the|our|this) (house|home|flat|apartment|condo)|house prices|the property|closing (day|date)|offer on (a|the) house|real estate)/i, 'property', '该不该'],
+    [/(裁员|裁掉|被裁|被开|开除|辞退|优化掉|丢(了|掉)?工作|饭碗|保住.{0,3}(工作|位置|饭碗)|合同.{0,4}(续|不续))|(laid off|layoffs?|lay ?off|get fired|fired|let go|lose my job|redundan|downsiz|restructur|contract.{0,10}renew)/i, 'layoff', null],
+    [/(老板|领导|上司|经理|主管|老师|导师|教授|上级).{0,8}(心情|脸色|骂|批评|为难|刁难|找茬|满意|认可|态度|对我|看好我|器重|生气|发火|挑刺)|(boss|manager|supervisor|professor|advisor|team lead|director).{0,24}(mood|angry|mad at|yell|happy with|approve|like me|on my side|pleased|rate me|value me|chew me out|pick on)/i, 'boss', null],
+    [/(开会|会议|汇报|述职|演讲|发言|路演|见客户|拜访|提案|评审会|答辩会|培训|讲课|直播).{0,12}(顺利|顺|成功|好|通过|反响|效果|讲好|发挥)|(presentation|meeting|pitch|talk|speech|demo|review|one[- ]on[- ]one|standup|webinar|lecture|workshop|client call|sales call).{0,24}(go well|go ok|go okay|go fine|be fine|succeed|land|smooth|nail it|impress)/i, 'meeting', null],
+    [/(活动|聚会|派对|生日会|婚礼|酒席|饭局|团建|展会|开业|发布会|演出|首映|市集|摆摊|签售).{0,10}(顺利|顺|成功|热闹|人多|来人|好|办得|搞得)|(party|event|wedding|launch|show|gig|livestream|open house|reunion|dinner party|book signing|market stall|fair).{0,24}(go well|turn ?out|work out|be fun|success|people (come|show)|good turnout|a hit)/i, 'event', null],
+    [/(会不会|能不能|还会|还能|是不是|有没有).{0,6}(回我|回复我|回消息|回信|回电|理我|联系我|找我|主动|回来找)|(回我|回复|理我|联系我|找我).{0,4}(吗|么|不)|(text|message|call|email|dm|reach out|get back to|write back|answer|reply|respond).{0,16}(me|back)(\s|$|\?)|(hear (back )?from) (him|her|them)|leave me on read|ghost(ing|ed)? me/i, 'reply', null],
+    [/复合|和好|挽回|回心转意|回头|重新在一起|重归于好|破镜重圆|(get back together|reconcile|make up with|win (him|her|them) back|come back to me|second chance|patch things up|fix us)|my ex.{0,16}(come back|return|reach out|text)/i, 'reconcile', null],
+    [/表白|告白|说出(我的)?心意|(跟|向|和).{0,4}说喜欢|(要不要|该不该|敢不敢).{0,4}(说|开口|挑明|捅破)|(confess|tell (him|her|them) (how I feel|I like|I love)|ask (him|her|them) out|make a move|shoot my shot|say how I feel|admit my feelings)/i, 'confess', '该不该'],
+    [/(喜不喜欢我|对我有(没有)?(意思|好感|感觉|心思)|喜欢我吗|爱我吗|在乎我吗|想我吗|把我当|对我认真|是不是也喜欢)|(like me|into me|have feelings for me|interested in me|love me|miss me|think about me|attracted to me|serious about me|feel the same)/i, 'crush', '真假'],
+    [/(睡得好|睡好|睡着|失眠|入睡|一觉到天亮|睡得着|睡眠).{0,6}|(sleep (well|tonight|through|ok)|fall asleep|insomnia|good night'?s sleep|get some sleep)/i, 'sleep', null],
+    [/戒(烟|酒|糖|赌|掉|手机|游戏|奶茶|熬夜|甜食|外卖)|(quit|give up|stop|cut out|cut back on).{0,10}(smoking|drinking|vaping|sugar|gambling|coffee|caffeine|the habit|scrolling|junk food|weed|porn|shopping)|kick the habit|stay sober|stay clean|stay off/i, 'quithabit', null],
+    [/(迟到|赶得上|赶不上|来得及|来不及|赶上|准时到|按时到|误了).{0,8}|(be late|make it (on time|in time|to)|catch (the|my) (train|bus|flight|plane|ferry)|get there (on time|in time)|on time)/i, 'commute', null],
+    [/(清关|海关|过关|被税|关税|扣(了|住|关)|卡在海关)|(customs|clear customs|held at|import (duty|tax)|duty charge)/i, 'customs', null],
+    [/(年检|车检|验车|验房|验收|审计|评估|资质审核|评级|复审|安检|消防检查|环评|质检|抽检|评审).{0,8}(过|通过|顺利|合格|没问题|能过)|(inspection|audit|mot|smog check|home inspection|appraisal|certification|compliance|safety check|fire inspection|accreditation).{0,20}(pass|clear|ok|go (through|well)|approve|sign off)|(pass|clear|get through).{0,12}(inspection|audit|the mot|smog|appraisal|certification)/i, 'inspection', null],
+    [/(哪天|哪一天|什么日子|选个?日子|择日|吉日|黄道吉日|挑个?(好)?日子|定在.{0,6}(好不好|行不行|合适))|(which day|what day|best day|good day to|pick a date|set a date|auspicious (day|date))/i, 'zeri', '时机'],
+    [/(孩子|小孩|娃|儿子|女儿|宝宝|宝贝).{0,8}(听话|乖|闹|哭|适应|上学|入园|入托|幼儿园|新学校|老师|同学|打架|好带|开心|发烧|退烧|吃饭|睡觉)|(my (kid|child|son|daughter|toddler|baby|little one)).{0,26}(behave|settle|adjust|daycare|nursery|new school|first day|tantrum|sleep through|teacher|be ok|be fine|make friends)/i, 'kid', null],
+    [/(亲戚|客人|爸妈|父母|公婆|岳父母|长辈|婆婆|丈母娘|家里人).{0,6}(来|上门|来访|来住|回家|见面|聚|相处)|见家长|回娘家|回婆家|回老家|(in-laws|parents|relatives|guests|family|mother in law).{0,18}(visit|coming|stay(ing)? (with|over)|meet (the|my) (parents|family)|thanksgiving|christmas|holidays)/i, 'visit', null],
+    [/(抢|挂|约|预约|排|订|定).{0,4}(到|上|得到)?.{0,4}(号|票|名额|位置|位子|座位|房间|预约|门诊)|(get|score|snag|book|land).{0,10}(tickets?|an appointment|a slot|a reservation|a table|a spot|a seat|a room)/i, 'ticket', null],
     /* 胎儿 / 生产 */
     [/男孩还是女孩|男孩女孩|是男是女|男宝还是女宝|男宝女宝|(怀|肚子里).{0,8}(男|女)|boy or (a )?girl|gender of (the|my) baby|baby.{0,10}(boy|girl)/i, 'babysex', '属性'],
     [/顺产|剖腹|剖宫|生产顺利|natural (birth|delivery)|c.?section|delivery go (well|smoothly)|give birth safely/i, 'birth', '成否'],
@@ -35697,7 +35772,9 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
     [/踢球|打球|篮球|足球|羽毛球|网球|跑步|马拉松|健身|撸铁|游泳|爬山|登山|徒步|骑行|滑雪|冲浪|潜水|瑜伽|拳击|比赛能|(play|go).{0,8}(football|soccer|basketball|tennis|golf|badminton)|running|marathon|gym|workout|swim|hik(e|ing)|climb|ski|surf|div(e|ing)|yoga|boxing|(the )?match|train(ing)? today/i, 'sport', null],
 
     /* 住 */
-    [/风水|宅运|阳宅|(房子|家|住处|办公室).{0,6}(旺|利|吉|凶|好不好)|feng ?shui|energy of (the|my) (house|home|flat|apartment)/i, 'fengshui', '属性'],
+    [/风水|宅运|阳宅|(房子|家|住处|办公室).{0,6}(旺|利|吉|凶|好不好)|feng ?shui|energy of (the|my) (house|home|flat|apartment)|(is|does) (my|the|this|our) (house|home|flat|apartment|place).{0,12}(good|bad|lucky|right|help|support)/i, 'fengshui', '属性'],
+    /* 小孩学业（英文里 child 会被旧表当成生育，先截住） */
+    [/(孩子|小孩|儿子|女儿|娃).{0,8}(学习|成绩|升学|考|读书)|(child|kid|son|daughter|children)('s)?.{0,20}(stud(y|ies)|school|exam|grade|homework|learning|university|college)|(stud(y|ies)|school|grades|homework).{0,24}(child|kid|son|daughter)/i, 'exam', null],
     [/租(房|到|个|套|得到)|找(房|到房|房子|住处|公寓)|(合适|满意|心仪|喜欢).{0,4}(房子|房源|住处)|房源|合租|(find|get|land).{0,12}(flat|apartment|rental|place to (rent|live)|room to rent)|rent(ing)? (a |the )?(flat|apartment|house|room)|landlord|lease/i, 'rent', null],
 
     /* 办事 */
@@ -35747,6 +35824,8 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
     [/邻居|楼上|楼下|物业|业委会|房东|租客|中介.{0,4}(纠纷|吵)|(neighbou?r|landlord|tenant|hoa|property manag|building manag).{0,20}(dispute|fight|complain|resolve|settle|noise|stop|deal with)/i, 'neighbor', null],
     [/快递|包裹|物流|发货|到货|签收|送达|派件|parcel|package|delivery|courier|shipment|(arrive|delivered|show up).{0,15}(today|tomorrow|on time|this week)/i, 'parcel', '成否'],
 
+    /* __mx254 靠后的泛题材 */
+    [/(今天|今日|本周|这周|这几天|最近).{0,6}(运气|运势|顺不顺|顺利吗|顺利不|适合|宜不宜|吉不吉|好不好过|状态)|运气.{0,4}(好不好|怎么样)|(lucky|luck|my day|good day|vibe|energy).{0,10}(today|this week|right now)|(today|this week).{0,14}(lucky|luck|good day|go my way|be kind)/i, 'luck', null],
     /* 相亲/约会 */
     [/相亲|约会|第一次见面|见面(顺|成|聊得来)|blind date|first date|(the|our|a) date (go|tonight|today)|meet(ing)? (him|her) (today|tonight)/i, 'date', null]
   ];
@@ -35939,6 +36018,51 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
       en:{s:'the job hunt',y:['Nothing lands for now — the market is cold; don\'t spray applications.','The job hunt is stuck — interviews, no offers; rework the CV.','You\'ll find one — within a month; narrow the search.','The job hunt runs smoothly — an offer is on its way.'],d:['Rework the CV instead of spraying','Two precise applications a day','Narrow the field','Follow up the ones you interviewed with']}},
     lawsuitwin:{zh:{s:'这场官司',y:['这场官司今日不利：证据偏弱，考虑和解。','官司胶着：五五开，看细节。','官司能赢大半：材料要齐。','官司之象胜：按律师说的推进。'],d:['问律师和解的可能','把证据链补齐','材料一份不缺','按律师节奏走']},
       en:{s:'the case',y:['The case runs against you today — evidence is thin; consider settling.','The case is even — 50/50; details decide.','The case mostly goes your way — the file must be complete.','The signs favour the case — follow your lawyer\'s lead.'],d:['Ask your lawyer about settling','Complete the chain of evidence','Not one document missing','Follow the lawyer\'s pace']}},
+    /* ===== __mx254 第三批 ===== */
+    offer:{zh:{s:'这个 offer',y:['今日不宜签：条件里有没说透的地方，先别点头。','胶着：能谈就再谈一轮，别急着定。','偏可接：大方向对，细节再确认一遍。','今日利签：该接就接，别拖。'],d:['把犹豫的那一条写下来，明天再看','再要一个条件（薪资/时间/岗位）','把合同逐条读一遍再签','今天回复对方']},
+           en:{s:'this offer',y:['Not a day to sign: something in the terms isn\'t fully said — don\'t nod yet.','Undecided — if you can negotiate, do one more round; don\'t rush.','Leans yes: the direction is right, confirm the details once more.','Good day to sign: if you want it, take it; don\'t drag.'],d:['Write down the one thing you hesitate on; look again tomorrow','Ask for one more term (pay, start date, title)','Read the contract line by line before signing','Reply to them today']}},
+    layoff:{zh:{s:'饭碗这事',y:['风险偏高：多留个心眼，别把话说满，把手上的活收干净。','不稳：位置有变数，先把能交付的交付了。','偏稳：这一阵不用慌，把成果留痕。','稳：这事不在你这边，安心做事。'],d:['把简历更新一版，放着','把手上的项目按时交付','把自己的成果写成一页','正常做事，别打听']},
+            en:{s:'your job',y:['Risk runs high: keep your guard up, don\'t over-promise, finish what\'s on your desk.','Unsettled — there is movement around your role; deliver what can be delivered first.','Leans safe: no need to panic this stretch; keep a record of your results.','Safe: this one isn\'t pointed at you. Work in peace.'],d:['Update your CV and leave it ready','Deliver the current project on time','Write your results up on one page','Do the work; don\'t go asking around']}},
+    boss:{zh:{s:'领导的态度',y:['今天别往枪口上撞：他/她心气不顺，能不汇报就明天再说。','平平：对你没意见，但今天不会给好脸。','偏好：今天说事有人听，但别提要求。','顺：今天开口，是好时候。'],d:['今天少去找，等明天','汇报只说结果，不说过程','挑一件做成的事说','把想争取的说出来']},
+          en:{s:'the boss',y:['Don\'t walk into the line of fire today: they\'re not in a good place — if it can wait till tomorrow, let it.','Flat: nothing against you, but no warm face today either.','Leans good: today they\'ll listen; just don\'t ask for things.','Open: speak up today — it\'s a good hour for it.'],d:['Keep a low profile today; try tomorrow','Report results only, not the process','Mention one thing you finished','Say what you want to ask for']}},
+    meeting:{zh:{s:'这场会',y:['今日不顺：会上容易被岔开，把要说的三句话写下来带着。','平平：能开完，但不会有结论。','偏顺：讲得清，有人接。','顺：今天的会能定事。'],d:['把要说的压成三句','别在会上争，会后再说','先讲结论','当场把结论落成文字']},
+             en:{s:'this meeting',y:['Rough today: easy to get derailed — write your three sentences and bring them.','Flat: it will happen, but nothing gets decided.','Leans well: you\'ll be clear and someone will pick it up.','Good: today\'s meeting can settle things.'],d:['Compress what you need to say into three lines','Don\'t argue in the room; follow up after','Lead with the conclusion','Put the decision in writing on the spot']}},
+    submission:{zh:{s:'这份投稿/申请',y:['今日不见回音，且偏不利：先别催，把下一家准备好。','胶着：在排队里，没被拒也没被选中。','偏有戏：有人在看，等回音的同时别停。','今日利：有好消息的象，留意邮箱。'],d:['准备下一份投出去','别催，两周后再问','把作品再打磨一处','查一遍邮箱和垃圾箱']},
+                en:{s:'this submission',y:['No word today and the lean is against: don\'t chase; get the next one ready.','In the queue — neither rejected nor chosen yet.','Promising: someone is reading; keep going while you wait.','Favourable today: signs of good news — check your inbox.'],d:['Prepare the next submission and send it','Don\'t chase; ask again in two weeks','Polish one more thing in the work','Check your inbox — and the spam folder']}},
+    reply:{zh:{s:'会不会回你',y:['今天不会回，且不是忘了：先把手机放下。','悬着：会回，但慢，别追着发。','偏会回：等一等，别连发。','今日会回，还可能主动找你。'],d:['今天别再发了','只发一条，不追问','等，别解释','准备好怎么接话']},
+           en:{s:'whether they reply',y:['Not today — and it isn\'t forgetfulness. Put the phone down.','Hanging: a reply will come, slowly; don\'t chase.','Leans yes: wait a little; no double-texting.','Today, yes — they may even reach out first.'],d:['Send nothing more today','One message only, no follow-ups','Wait; don\'t explain yourself','Have your next line ready']}},
+    reconcile:{zh:{s:'复合这事',y:['今日不宜：旧账没清，回去只是重来一遍。','胶着：对方也在犹豫，别逼。','偏有戏：先见一面，别谈以后。','今日利复合：主动一步，是时候。'],d:['先想清楚上次为什么分','别提复合，只问近况','约一次短的见面','把想说的当面说']},
+               en:{s:'getting back together',y:['Not today: the old account isn\'t settled — going back would just replay it.','Undecided — they\'re hesitating too; don\'t push.','Promising: meet once first, don\'t talk about the future yet.','Favourable: take the first step — it\'s time.'],d:['Get clear on why it ended last time','Don\'t mention getting back; just ask how they are','Set one short meet-up','Say it to their face']}},
+    confess:{zh:{s:'表白',y:['今日不宜说：说了会把现有的也弄僵，再等。','半半：对方没准备好，说了是赌。','偏可说：换个轻的方式，别一上来就重。','今日利开口：说吧。'],d:['今天先别说','先多约一次','用轻一点的话试探','今天说']},
+             en:{s:'telling them',y:['Not the day: saying it now would stiffen what you already have — wait.','Fifty-fifty: they aren\'t ready; saying it is a gamble.','Leans yes: say it lightly — don\'t open heavy.','Good day to speak: say it.'],d:['Hold it today','Get one more hangout in first','Test the water with something light','Say it today']}},
+    crush:{zh:{s:'TA 对你的心思',y:['没看出意思：客气多于心动。','说不清：有好感，但没到喜欢。','偏有意思：在留意你，只是没表现。','有意思，而且比你以为的多。'],d:['别脑补，先当朋友','留意 TA 会不会主动找你','制造一次自然的相处','大胆一点']},
+           en:{s:'how they feel about you',y:['Not much there: politeness more than a spark.','Hard to say: some warmth, not yet liking.','Leans yes: they notice you; they just don\'t show it.','Yes — and more than you think.'],d:['Don\'t over-read it; be a friend first','Watch whether they reach out first','Create one natural chance to hang out','Be a little bolder']}},
+    checkup:{zh:{s:'检查结果',y:['今日不顺：结果可能要复查，别慌，按医生说的走。','平平：大概率没大事，小项目需要跟进。','偏好：多数正常，个别指标注意。','顺：结果偏好。（非医疗建议，以报告为准。）'],d:['把报告带去问医生','把异常项记下来','按时复查','该做的体检都做了']},
+             en:{s:'the results',y:['Rough: a re-test may be needed — no panic; follow the doctor.','Flat: likely nothing major, one or two items to follow up.','Leans good: mostly normal; watch the odd marker.','Good: the results lean fine. (Not medical advice — the report decides.)'],d:['Take the report to the doctor and ask','Note the flagged items','Re-test on schedule','Keep up the routine checks']}},
+    sleep:{zh:{s:'今晚的觉',y:['今晚难睡：早点关灯，别刷手机。','浅：睡得着但容易醒，别喝咖啡。','偏好：正常入睡。','睡得好。'],d:['十点前放下手机','下午三点后不喝咖啡茶','睡前走十分钟','今晚早睡一小时']},
+           en:{s:'tonight\'s sleep',y:['Hard night: lights out early, no scrolling.','Light: you\'ll sleep but wake easily — skip the coffee.','Leans good: normal sleep.','A good night.'],d:['Phone down by ten','No coffee or tea after 3 pm','A ten-minute walk before bed','Go to bed an hour earlier tonight']}},
+    quithabit:{zh:{s:'戒它这事',y:['今日难：诱惑多，别定太大的目标，撑过今天就好。','胶着：能忍但反复，把诱因拿开。','偏成：今天有劲，把第一天当成第一天。','顺：好时候，今天开始。'],d:['只求今天不碰','把它从视线里拿走','找一个替代动作','今天开始，告诉一个人']},
+               en:{s:'quitting it',y:['Hard day: lots of pull — don\'t set a big goal; just get through today.','Back and forth — you can hold, but it comes back; remove the trigger.','Leans doable: energy is with you today; treat day one as day one.','Good time: start today.'],d:['Just don\'t touch it today','Get it out of sight','Pick one replacement action','Start today and tell one person']}},
+    commute:{zh:{s:'赶不赶得上',y:['今日赶不上：提前走，或者改时间。','悬：会踩点，早出十五分钟。','偏赶得上：正常走就行。','顺：来得及。'],d:['现在就出门','提前十五分钟','看一眼路况再走','按时出发']},
+             en:{s:'making it on time',y:['You\'ll be late: leave early or move the time.','Tight: it\'ll be close — leave fifteen minutes early.','Leans fine: go as planned.','Fine: you\'ll make it.'],d:['Leave now','Fifteen minutes early','Check traffic before you go','Leave on time']}},
+    event:{zh:{s:'这场活动',y:['今日不顺：人少或出岔子，把流程压短。','平平：办得成，气氛一般。','偏顺：人会来，热闹。','顺：好日子。'],d:['把环节砍一半','提前一天再确认一遍','多备一点吃的和位置','安心办']},
+           en:{s:'the event',y:['Rough: thin turnout or a hitch — shorten the programme.','Flat: it\'ll happen; the mood will be so-so.','Leans well: people will come; it\'ll be lively.','Good: a good day for it.'],d:['Cut the programme in half','Re-confirm everything the day before','Over-prepare food and seats','Relax and run it']}},
+    customs:{zh:{s:'清关',y:['今日卡着：要补资料或被税，准备好单据。','慢：在排，别急。','偏顺：这两天放行。','顺：今天过。'],d:['把发票和申报单备齐','查一下物流状态','等两天再查','留意派送电话']},
+             en:{s:'customs',y:['Stuck today: paperwork or duty — have the documents ready.','Slow: in the queue; don\'t fret.','Leans clear: released within a day or two.','Clear: through today.'],d:['Have the invoice and declaration ready','Check the tracking','Check again in two days','Watch for the courier call']}},
+    inspection:{zh:{s:'这次检查/验收',y:['今日不过：有一处硬伤，先修再验。','胶着：有条件通过，会被要求整改。','偏过：小问题，能过。','过。'],d:['把最可能挂的那一项先修','准备整改的说法','把资料按顺序放好','正常应检']},
+                en:{s:'the inspection',y:['Fails today: one hard fault — fix first, then present.','Conditional: it passes with a list of corrections.','Leans pass: minor points only.','Pass.'],d:['Fix the one item most likely to fail','Prepare the correction plan','Put the documents in order','Show up as planned']}},
+    zeri:{zh:{s:'挑日子',y:['这两天都不是好日子：往后挪。','一般：不冲你，但也不旺。','偏好：可以用。','好日子：就定这天。'],d:['往后挑一周内的另一天','避开和你冲的日子','定下来别再改','定下来通知大家']},
+          en:{s:'picking a day',y:['Neither of these days is good: move it later.','Ordinary: not against you, not strong either.','Leans good: usable.','A good day: set it.'],d:['Pick another day within the week','Avoid the day that clashes with you','Set it and stop changing','Set it and tell everyone']}},
+    luck:{zh:{s:'今天的运气',y:['今日逆：少做决定，把手头的事做完就好。','平：不出彩也不出错。','偏顺：适合推进小事。','顺：今天适合动。'],d:['今天不签、不买、不吵','把一件小事做完','推进一件拖着的事','把最想做的那件做了']},
+          en:{s:'today\'s luck',y:['Headwind: make few decisions; finish what\'s in hand.','Flat: no sparkle, no slips.','Leans fair: good for small moves.','Good: a day to act.'],d:['No signing, no buying, no arguing today','Finish one small thing','Move one thing that\'s been stuck','Do the thing you most want to do']}},
+    ticket:{zh:{s:'抢票/预约',y:['今日难：抢不到，备个替代。','悬：要拼手速。','偏能：正常操作就行。','能抢到。'],d:['提前准备好备选','提前登录、卡点','准点操作','放心抢']},
+            en:{s:'the booking',y:['Hard today: you probably won\'t get it — have a plan B.','Tight: it\'ll come down to speed.','Leans yes: just do it normally.','You\'ll get it.'],d:['Line up a backup first','Log in early, be ready on the second','Act right on time','Go for it']}},
+    property:{zh:{s:'买卖房这事',y:['今日不宜签：价格或产权有没看清的地方。','胶着：可以谈，别急着定。','偏可：条件合适就推进。','今日利成交。'],d:['把不清楚的那一条问清楚','再看一套对比','把合同条款逐条过','今天定']},
+              en:{s:'the property',y:['Not a day to sign: something in the price or title isn\'t clear yet.','Undecided — negotiate, don\'t settle today.','Leans yes: if the terms fit, proceed.','Favourable for closing.'],d:['Get the unclear point answered','View one more for comparison','Go through the contract clause by clause','Decide today']}},
+    kid:{zh:{s:'孩子今天',y:['今天闹：别硬碰，多给点时间和拥抱。','平平：有点情绪，能过去。','偏好：配合，愿意听。','顺：今天乖，适合一起做点事。'],d:['今天不讲道理，先安抚','早点睡','夸一件具体的事','一起做一件事']},
+         en:{s:'the kid today',y:['A rough day: don\'t push back hard — more time, more hugs.','So-so: some moods, they\'ll pass.','Leans good: cooperative, willing to listen.','Good: an easy day — do something together.'],d:['No lectures today; soothe first','Early bedtime','Praise one specific thing','Do one thing together']}},
+    visit:{zh:{s:'这次见面/来访',y:['今日易生摩擦：话少说，饭好吃。','平平：客气收场。','偏顺：气氛不错。','顺：能聊到一起。'],d:['避开敏感话题','安排一件大家一起做的事','多问少说','放松']},
+           en:{s:'the visit',y:['Friction likely: say less, feed them well.','Flat: polite, ends fine.','Leans well: a good mood.','Good: you\'ll actually talk.'],d:['Steer clear of the sore topics','Plan one thing everyone does together','Ask more, say less','Relax']}},
     neighbor:{zh:{s:'邻里这事',y:['今日别对线：越争越僵。','胶着：找物业/第三方，别私了。','能解决：书面沟通，留记录。','今日顺：当面说一次就好。'],d:['今天别去理论','找物业或第三方','书面沟通，留记录','当面好好说']},
       en:{s:'the neighbour matter',y:['Don\'t confront today — it only hardens.','Stuck — go through management or a third party, not directly.','It can be resolved — put it in writing, keep records.','Runs smoothly today — one face-to-face talk settles it.'],d:['Don\'t argue today','Go through management or a mediator','Put it in writing','Talk it out face to face']}},
 
@@ -36169,6 +36293,8 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
 
   /* ---------- 拒答块 ---------- */
   var REFUSE_TXT = {
+    dream:['梦，这一课不占。','三式断的是眼前这件事的势与时机，不解梦。如果这个梦让你惦记着某件事，就把那件事问出来——比如「这段关系接下来怎么走」「这个决定该不该做」。',
+           'Dreams aren\'t what this cast reads.','The three arts read the momentum and timing of a matter in front of you; they don\'t interpret dreams. If the dream has you thinking about something, ask that thing — "where does this relationship go", "should I make this decision".'],
     paternity:['这个问题，占卜给不了可靠答案。','孩子是谁的，只有医学检测能说清；任何一课都不该替它做主。想问的话，可以换成「这段关系接下来怎么走」。',
                'This is a question divination can\'t answer reliably.','Only a medical test can settle whose child it is; no cast should stand in for that. If you like, ask instead "where does this relationship go from here".'],
     death:['生死不占，这是老规矩。','没有哪一课能告诉你一个人还能活多久，我们也不会假装能。你可以问「这段时间怎么照顾他/她更好」或「近期身体该注意什么」。',
