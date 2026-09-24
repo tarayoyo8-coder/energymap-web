@@ -1,5 +1,5 @@
 /* Good Q · 网页版离线缓存。VERSION 由发布脚本每次自动改写，改了浏览器就会换新版。 */
-const VERSION = '20260922-bcdc0baa';
+const VERSION = '20260924-0463da88';
 const CACHE = 'goodq-web-' + VERSION;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
