@@ -30448,6 +30448,7 @@ return { hecan, norm, W, CAL, ZANCH, TAIL, ZCAP, TIER_TH, SIGN_BAND, TIERS };
     for(var i=0;i<all.length;i++){
       var d=all[i];
       if(d.getAttribute('data-mx190p')) continue;
+      if(d.closest && d.closest('[data-mx257]')) continue;   /* __mx257 网页订阅卡的价格要给人看 */
       var t=d.textContent||'';
       if(t.indexOf('$9.99')<0||t.indexOf('$79.99')<0) continue;
       var deeper=false, kids=d.getElementsByTagName('div');
@@ -30462,6 +30463,7 @@ return { hecan, norm, W, CAL, ZANCH, TAIL, ZCAP, TIER_TH, SIGN_BAND, TIERS };
     for(var k=0;k<leaves.length;k++){
       var e=leaves[k];
       if(e.children.length||e.getAttribute('data-mx190p')) continue;
+      if(e.closest && e.closest('[data-mx257]')) continue;
       if(PRICE_RE.test(e.textContent||'')) e.setAttribute('data-mx190p','1');
     }
   }
@@ -36715,5 +36717,225 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
 })();
 
 </script>
+<script>
+(function(){ /* __mx257 网页版订阅：Stripe Payment Links（只在浏览器里，App 里一律不出现）
+   规矩：
+   ① 只在 plat()==='web' 时生效。iOS / Android 壳里什么都不做，Stripe 链接一个都不露。
+   ② 付款在 Stripe 页面完成，这里不碰卡号、不联网请求、不存任何个人信息。
+   ③ 付完 Stripe 跳回 /app/?paid=cs_... ，看到 cs_live_ / cs_test_ 开头才算数，记在本机。
+   ④ 出岔子一律解锁（和 MX213 规矩③一致）。
+   ⑤ 这是"软锁"：没有服务器核验。以后加 Cloudflare Worker 再做真核验。 */
+  if(window.__mx257) return; window.__mx257=1;
+
+  var LINK_M = "https://buy.stripe.com/fZubJ29cQ8UC5WzdIx8og0r";   /* $9.99/月 · 3 天免费 */
+  var LINK_Y = "https://buy.stripe.com/14AdRaexaeeW70D33T8og0s";   /* $79.99/年 · 3 天免费 */
+  var PORTAL = "https://billing.stripe.com/p/login/9B628s0Gk8UCdp1gUJ8og00";                                                  /* 管理订阅（Customer portal）登录链接 */
+  var LS = "mx257_web_paid_v1";
+
+  function plat(){ try{ return (window.Capacitor && Capacitor.getPlatform) ? Capacitor.getPlatform() : 'web'; }catch(e){ return 'web'; } }
+  if(plat()!=='web') return;                                         /* 规矩① */
+
+  function zh(){ try{ return (typeof lang!=='undefined') ? lang!=='en' : true; }catch(e){ return true; } }
+  function S(){ return window.__mx213 || null; }
+  function paid(){ try{ return /^cs_(live|test)_/.test(localStorage.getItem(LS)||''); }catch(e){ return false; } }
+
+  /* 规矩③：从 Stripe 跳回来时记下 session，再把网址里的参数擦掉 */
+  try{
+    var q = new URLSearchParams(location.search), sid = q.get('paid') || '';
+    if(/^cs_(live|test)_[A-Za-z0-9]+$/.test(sid)){
+      try{ localStorage.setItem(LS, sid); localStorage.setItem(LS+'_at', String(Date.now())); }catch(e){}
+      window.__mx257justPaid = 1;
+    }
+    if(q.has('paid')){
+      q.delete('paid');
+      var rest = q.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?'+rest : '') + location.hash);
+    }
+  }catch(e){}
+
+  var T = {
+    zh:{
+      title:'完整命盘 · 会员',
+      lead:'这几块是这套盘里最花功夫的部分。免费版照旧：今日五行与节律、每日一问、基本命盘与日主、感情与合盘。',
+      items:['未来 12 个月：流年流月，每个月的节律','命运蓝图：整体格局 → 十年大运 → 流年，财运、事业、身体提醒都在里面',
+             '六大主题深读：婚姻、官职、财富、名望、健康、六亲','铁板神数 · 十三法，每个号头都带完整算式','以后新加的会员内容自动包含'],
+      m:'按月 · 免费 3 天，之后 $9.99/月',
+      y:'按年 · 免费 3 天，之后 $79.99/年（省 33%）',
+      legal:'付款在 Stripe 的安全页面完成，我们收不到你的卡号。试用期内取消不收费；不取消会自动续费，随时可以取消。',
+      manage:'管理订阅 / 取消',
+      device:'在哪台设备上付款，就在哪台设备上解锁。换了手机或浏览器，请用「管理订阅」确认订阅还在。',
+      free:'① 你是谁 · 本命底盘 —— 永久免费',
+      freed:'每日一问、四柱基本盘也一直免费。',
+      thanks:'已解锁，谢谢你 🌿',
+      locked:'🔒 这一块是会员内容',
+      unlock:'免费试用 3 天解锁',
+      close:'关闭'
+    },
+    en:{
+      title:'The full reading · Plus',
+      lead:'These are the parts that took the most work. Still free: today\u2019s elements and rhythm, the daily question, your basic chart and day master, love and two-chart readings.',
+      items:['The next 12 months: the rhythm of every month','Your life blueprint: overall pattern \u2192 ten-year cycles \u2192 each year, with money, work and body notes',
+             'Six deep dives: marriage, status, wealth, reputation, health, family','Tieban Shenshu \u2014 thirteen methods, every number with its arithmetic','New Plus content included as it is added'],
+      m:'Monthly · 3 days free, then $9.99/mo',
+      y:'Yearly · 3 days free, then $79.99/yr (save 33%)',
+      legal:'Checkout happens on Stripe’s secure page; we never see your card. Cancel during the trial and you are not charged. Otherwise it renews automatically until you cancel.',
+      manage:'Manage or cancel subscription',
+      device:'Unlocks on the device and browser you paid on. On a new phone or browser, use “Manage subscription” to check it is still active.',
+      free:'Who you are — always free',
+      freed:'The daily question and your four pillars stay free.',
+      thanks:'Unlocked. Thank you 🌿',
+      locked:'🔒 This part is in Plus',
+      unlock:'Unlock · 3 days free',
+      close:'Close'
+    }
+  };
+  function t(){ return zh()?T.zh:T.en; }
+
+  function btn(href, label){
+    return '<a href="'+href+'" rel="noopener" '
+      +'style="display:block;box-sizing:border-box;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:13px;margin-top:9px;'
+      +'font-size:15px;font-weight:700;color:#fff;background:#C0704A;font-family:inherit">'+label+'</a>';
+  }
+  function manageHTML(){
+    if(!PORTAL) return '';
+    return '<div style="text-align:center;margin-top:9px"><a href="'+PORTAL+'" target="_blank" rel="noopener" '
+      +'style="font-size:13px;color:#8A7A62;text-decoration:underline">'+t().manage+'</a></div>';
+  }
+  function payHTML(){
+    var L=t();
+    var li=L.items.map(function(x){
+      return '<div style="font-size:13px;line-height:1.95;color:#6B5A47">· '+x+'</div>'; }).join('');
+    return ''
+      +'<div id="mx213pay" data-keepcjk="1" data-mx257="1" style="background:#FFF8EE;border:2px solid #F0DFC6;border-radius:22px;padding:17px 18px;margin:16px 0">'
+      +'<div style="font-family:Georgia,\'Songti SC\',serif;font-size:19px;font-weight:600;color:#463B2E">'+L.title+'</div>'
+      +'<div style="font-size:13px;line-height:1.95;color:#8A7A62;margin:7px 0 11px">'+L.lead+'</div>'
+      + li
+      + btn(LINK_M, L.m)
+      + btn(LINK_Y, L.y)
+      + manageHTML()
+      +'<div style="font-size:11.5px;line-height:1.75;color:#A2937C;margin-top:12px;border-top:1px solid #F0DFC6;padding-top:9px">'+L.legal+'</div>'
+      +'<div style="font-size:11.5px;line-height:1.75;color:#A2937C;margin-top:7px">'+L.device+'</div>'
+      +'<div style="font-size:11.5px;line-height:1.8;color:#B3A48C;margin-top:12px;border-top:1px solid #F0DFC6;padding-top:9px">'+L.free+'<br>'+L.freed+'</div>'
+      +'</div>';
+  }
+
+  /* 已付费的人：命盘底部放一行「管理订阅」，付完款第一次回来再说声谢谢 */
+  function ensureManage(){
+    try{
+      var st=S(); if(!st || !st.gated || !st.owned) return;
+      var tb=document.getElementById('tb19');
+      var el=document.getElementById('mx257mg');
+      var html=(window.__mx257justPaid ? '<div style="font-size:13px;color:#6B5A47;margin-bottom:4px">'+t().thanks+'</div>' : '')
+              + manageHTML();
+      if(!html){ if(el) el.remove(); return; }
+      if(!el){ el=document.createElement('div'); el.id='mx257mg'; el.setAttribute('data-keepcjk','1');
+               el.style.cssText='text-align:center;margin:14px 0 6px'; }
+      if(el.innerHTML!==html) el.innerHTML=html;
+      if(tb && tb.parentNode){ if(el.previousSibling!==tb) tb.parentNode.insertBefore(el, tb.nextSibling); }
+      else { var host=document.getElementById(zh()?'bpArc':'mpEnFlow') || document.getElementById('bpArc'); if(host && el.parentNode!==host) host.appendChild(el); }
+    }catch(e){}
+  }
+
+  /* 新版界面（底部五个标签）里 #bpArc 是隐藏的，付费卡放进去用户看不见。
+     看得见的锁在「命盘」标签的铁板十三法那里（#mx228tip），把付费卡挪到它下面。 */
+  function placeCard(){
+    try{
+      var st=S(); if(!st || !st.gated || st.owned) return;
+      var card=document.getElementById('mx213pay'), tip=document.getElementById('mx228tip');
+      if(!tip || !tip.parentNode) return;
+      if(!card){ var w=document.createElement('div'); w.innerHTML=payHTML(); card=w.firstChild; }
+      if(card.previousSibling!==tip) tip.parentNode.insertBefore(card, tip.nextSibling);
+    }catch(e){}
+  }
+
+  /* ── 更多会员内容（她 10-15 拍板：都锁进会员）──────────────
+     锁法：卡片本身留着标题，正文用 CSS 藏起来，下面放一个「免费试用 3 天解锁」按钮。
+     卡片内容会被别的模块重画，所以只给卡片打一个 class，正文怎么重画都会被 CSS 藏住。 */
+  var LOCK_IDS = ['timeline', 'bpOverview'];   /* 未来12个月；命运蓝图 */
+  function cardOf(id){
+    var el=document.getElementById(id); if(!el) return null;
+    return (el.closest && el.closest('.card')) || null;
+  }
+  function locked(){ var st=S(); return !!(st && st.gated && !st.owned); }
+  function openPay(){
+    try{
+      var ov=document.getElementById('mx257ov');
+      if(!ov){
+        ov=document.createElement('div'); ov.id='mx257ov'; ov.setAttribute('data-keepcjk','1'); ov.setAttribute('data-mx257','1');
+        ov.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(30,24,18,.55);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 14px';
+        ov.addEventListener('click', function(e){ if(e.target===ov) ov.style.display='none'; });
+        document.body.appendChild(ov);
+      }
+      ov.innerHTML='<div style="max-width:520px;margin:0 auto">'
+        +'<div style="text-align:right"><button type="button" onclick="document.getElementById(\'mx257ov\').style.display=\'none\'" '
+        +'style="border:0;border-radius:12px;background:#fff;padding:7px 14px;font-size:14px;font-family:inherit;cursor:pointer">✕ '+t().close+'</button></div>'
+        + payHTML().replace('id="mx213pay"','id="mx257pay"') + '</div>';
+      ov.style.display='block';
+    }catch(e){}
+  }
+  window.__mx257open = openPay;
+  function lockBlock(){
+    return '<div class="mx257lock" data-keepcjk="1" data-mx257="1" style="margin:10px 0 2px;padding:13px 14px;border-radius:14px;background:rgba(192,112,74,.10);text-align:center">'
+      +'<div style="font-size:13px;color:#A2937C;margin-bottom:9px">'+t().locked+'</div>'
+      +'<button type="button" onclick="window.__mx257open()" style="border:0;border-radius:14px;padding:11px 18px;font-size:14.5px;font-weight:700;color:#fff;background:#C0704A;font-family:inherit;cursor:pointer">'+t().unlock+'</button>'
+      +'</div>';
+  }
+  function lockCards(){
+    try{
+      var on=locked();
+      LOCK_IDS.forEach(function(id){
+        var c=cardOf(id); if(!c) return;
+        if(on){
+          if(!c.classList.contains('mx257locked')) c.classList.add('mx257locked');
+          var first=c.firstElementChild;
+          if(first && !first.classList.contains('mx257lock') && !first.classList.contains('mx257keep')) first.classList.add('mx257keep');
+          var lb=c.querySelector(':scope > .mx257lock');
+          if(!lb){ var w=document.createElement('div'); w.innerHTML=lockBlock(); c.appendChild(w.firstChild); }
+          else if(lb.textContent.indexOf(t().unlock)<0){ lb.outerHTML=lockBlock(); }
+        } else if(c.classList.contains('mx257locked')){
+          c.classList.remove('mx257locked');
+          var x=c.querySelector(':scope > .mx257lock'); if(x) x.remove();
+        }
+      });
+    }catch(e){}
+  }
+  try{
+    var css=document.createElement('style'); css.id='mx257css';
+    css.textContent='.mx257locked > *:not(.mx257keep):not(.mx257lock){display:none !important}';
+    document.head.appendChild(css);
+  }catch(e){}
+  /* 六大主题深读（今天页那排按钮）：没订阅就弹付费卡，订阅了照常打开 */
+  function wrapTopics(){
+    try{
+      var orig=window.__mx179_open;
+      if(typeof orig!=='function' || orig.__mx257) return;
+      var w=function(tp){ if(locked()){ openPay(); return; } return orig.apply(this, arguments); };
+      w.__mx257=1; window.__mx179_open=w;
+    }catch(e){}
+  }
+
+  function boot(){
+    var st=S();
+    if(!st){ return setTimeout(boot, 300); }
+    try{
+      window.__mx213payHTML = payHTML;      /* 接管付费卡（MX233 在网页上不会再覆盖它） */
+      st.gated = true;
+      st.owned = paid();
+      st.ready = true;
+      if(window.__mx213repaint) window.__mx213repaint();
+    }catch(e){ try{ st.gated=false; st.owned=true; }catch(_){} }   /* 规矩④ */
+    placeCard(); ensureManage(); lockCards(); wrapTopics();
+  }
+  /* MX213 在 load+1.2s 把网页设成不收费，MX233 在 load+1.5s 换付费卡；这里排在它们之后 */
+  if(document.readyState==='complete') setTimeout(boot, 2200);
+  else window.addEventListener('load', function(){ setTimeout(boot, 2200); });
+  setInterval(function(){
+    try{ var st=S(); if(st && st.gated && window.__mx213payHTML!==payHTML){ window.__mx213payHTML=payHTML; if(window.__mx213repaint) window.__mx213repaint(); } }catch(e){}
+    placeCard(); ensureManage(); lockCards(); wrapTopics();
+    try{ if(!locked()){ var ov=document.getElementById('mx257ov'); if(ov) ov.style.display='none'; } }catch(e){}
+  }, 1500);
+})();
+</script>
+
 </body>
 </html>
