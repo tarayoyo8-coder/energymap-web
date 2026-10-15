@@ -36761,7 +36761,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
              '六大主题深读：婚姻、官职、财富、名望、健康、六亲','铁板神数 · 十三法，每个号头都带完整算式','以后新加的会员内容自动包含'],
       m:'按月 · 免费 3 天，之后 $9.99/月',
       y:'按年 · 免费 3 天，之后 $79.99/年（省 33%）',
-      legal:'付款在 Stripe 的安全页面完成，我们收不到你的卡号。试用期内取消不收费；不取消会自动续费，随时可以取消。',
+      legal:'付款在 Stripe 的安全页面完成，我们收不到你的卡号。试用期内取消不收费；不取消会自动续费，随时可以取消。订阅即表示同意<a href="../terms.html#zh" target="_blank" rel="noopener" style="color:inherit">服务条款</a>。',
       manage:'管理订阅 / 取消',
       device:'在哪台设备上付款，就在哪台设备上解锁。换了手机或浏览器，请用「管理订阅」确认订阅还在。',
       free:'① 你是谁 · 本命底盘 —— 永久免费',
@@ -36778,7 +36778,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
              'Six deep dives: marriage, status, wealth, reputation, health, family','Tieban Shenshu \u2014 thirteen methods, every number with its arithmetic','New Plus content included as it is added'],
       m:'Monthly · 3 days free, then $9.99/mo',
       y:'Yearly · 3 days free, then $79.99/yr (save 33%)',
-      legal:'Checkout happens on Stripe’s secure page; we never see your card. Cancel during the trial and you are not charged. Otherwise it renews automatically until you cancel.',
+      legal:'Checkout happens on Stripe’s secure page; we never see your card. Cancel during the trial and you are not charged. Otherwise it renews automatically until you cancel. By subscribing you agree to the <a href="../terms.html" target="_blank" rel="noopener" style="color:inherit">Terms of Service</a>.',
       manage:'Manage or cancel subscription',
       device:'Unlocks on the device and browser you paid on. On a new phone or browser, use “Manage subscription” to check it is still active.',
       free:'Who you are — always free',
@@ -36934,6 +36934,76 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
     placeCard(); ensureManage(); lockCards(); wrapTopics();
     try{ if(!locked()){ var ov=document.getElementById('mx257ov'); if(ov) ov.style.display='none'; } }catch(e){}
   }, 1500);
+})();
+</script>
+
+<script>
+(function(){ /* __mx258 网页版用词：网页上不说 Apple ID、不说「删除这个应用」，品牌统一成 Good Q。
+   只在浏览器里生效（plat()==='web'）；iOS / 安卓壳里一个字都不改。 */
+  if(window.__mx258) return; window.__mx258=1;
+  function plat(){ try{ return (window.Capacitor && Capacitor.getPlatform) ? Capacitor.getPlatform() : 'web'; }catch(e){ return 'web'; } }
+  if(plat()!=='web') return;
+  function zh(){ try{ return (typeof lang!=='undefined') ? lang!=='en' : true; }catch(e){ return true; } }
+  var MAIL='<a href="mailto:taraachen@rootchakraholy.com">taraachen@rootchakraholy.com</a>';
+  var PORTAL='https://billing.stripe.com/p/login/9B628s0Gk8UCdp1gUJ8og00';
+
+  var TERMS_EN =
+     '<p><b>What Good Q is.</b> Good Q reads Chinese calendrical charts - four pillars, and three classical divination methods - and writes out what the tradition says about them. It is a cultural and reflective tool.</p>'
+    +'<h4>What it is not</h4><p>Nothing here is medical, legal, financial or psychological advice. It states tendencies, never verdicts, and shows the arithmetic behind each one. Decisions about your health, your money or your legal position belong with a qualified professional.</p>'
+    +'<h4>Subscription (website)</h4><p>Plus is an auto-renewing subscription: US$9.99 a month or US$79.99 a year, each with a 3-day free trial. Checkout is handled by Stripe; we never see your card. Cancel during the trial and you are not charged. Otherwise it renews each month or year until you cancel. Cancel any time at <a href="'+PORTAL+'" target="_blank" rel="noopener">Manage subscription</a>; you keep Plus until the end of the period you paid for. Charged by mistake? Email us within 14 days for a full refund.</p>'
+    +'<h4>Your content</h4><p>What you type stays in this browser on your own device. The site does not upload it. Clearing your browser data erases it.</p>'
+    +'<h4>Full terms</h4><p><a href="../terms.html" target="_blank" rel="noopener">Terms of Service</a> &middot; <a href="../web-privacy.html" target="_blank" rel="noopener">Website privacy</a></p>'
+    +'<h4>Contact</h4><p>Rootchakraholy Inc. &middot; '+MAIL+'</p>';
+  var TERMS_ZH =
+     '<p><b>Good Q 是什么。</b>它读的是中国传统历法命盘 —— 四柱，以及三套古典术数 —— 并把传统对它们的说法写出来。它是一件文化性、反思性的工具。</p>'
+    +'<h4>它不是什么</h4><p>这里没有任何医疗、法律、财务或心理方面的建议。只说倾向，不下判决，每一条都附算式。关于健康、钱和法律处境的决定，请交给有资质的专业人士。</p>'
+    +'<h4>订阅（网页版）</h4><p>会员是自动续费订阅：每月 9.99 美元或每年 79.99 美元，都先免费试用 3 天。付款由 Stripe 处理，我们看不到你的卡号。试用期内取消不收费；不取消就按月或按年自动续费，直到你取消。随时可以在<a href="'+PORTAL+'" target="_blank" rel="noopener">管理订阅</a>里取消，已付的这一期照常用到期满。误扣的话，14 天内发邮件给我们，全额退款。</p>'
+    +'<h4>你的内容</h4><p>你输入的内容只存在你这台设备的浏览器里，网站不上传。清除浏览器数据就会删除。</p>'
+    +'<h4>完整条款</h4><p><a href="../terms.html#zh" target="_blank" rel="noopener">服务条款</a> &middot; <a href="../web-privacy.html#zh" target="_blank" rel="noopener">网站隐私说明</a></p>'
+    +'<h4>联系方式</h4><p>Rootchakraholy Inc. &middot; '+MAIL+'</p>';
+
+  var PRIV_EN =
+     '<p><b>Short version: your chart and questions stay in your browser.</b> No analytics, no ads, no trackers. Every calculation runs on your device.</p>'
+    +'<h4>What stays in your browser</h4><p>Your birth date, time and sex, any optional profile, and the questions you ask are kept in this browser&rsquo;s local storage. We never receive them. Clearing this site&rsquo;s data erases them.</p>'
+    +'<h4>Payments</h4><p>If you subscribe, Stripe runs the checkout and collects your email and card details under its own privacy policy. We receive your email, plan and payment status from Stripe, never your full card number. Your chart and questions are never sent to Stripe or to us.</p>'
+    +'<h4>Children</h4><p>Good Q is intended for adults.</p>'
+    +'<h4>More</h4><p><a href="../web-privacy.html" target="_blank" rel="noopener">Website privacy</a> &middot; '+MAIL+'</p>';
+  var PRIV_ZH =
+     '<p><b>简单说：你的命盘和问题只留在你的浏览器里。</b>不做统计、不放广告、不装追踪，所有计算都在你的设备上完成。</p>'
+    +'<h4>留在浏览器里的</h4><p>出生日期、时间、性别，可选的档案，以及你问的问题，都存在这个浏览器的本地存储里，我们收不到。清除本站数据就会删除。</p>'
+    +'<h4>付款</h4><p>订阅时由 Stripe 负责付款页面，按它自己的隐私政策收集邮箱和卡片信息。我们从 Stripe 拿到邮箱、方案和付款状态，拿不到完整卡号。你的命盘和问题不会发给 Stripe，也不会发给我们。</p>'
+    +'<h4>未成年人</h4><p>Good Q 面向成年人。</p>'
+    +'<h4>更多</h4><p><a href="../web-privacy.html#zh" target="_blank" rel="noopener">网站隐私说明</a> &middot; '+MAIL+'</p>';
+
+  function setHTML(el, html){ if(el && el.__mx258!==html){ el.innerHTML=html; el.__mx258=html; } }
+  function setText(el, txt){ if(el && el.textContent!==txt) el.textContent=txt; }
+  function apply(){
+    try{
+      var Z=zh();
+      var te=document.getElementById('mx233en'); if(te) te.setAttribute('data-mx257','1');   /* 英文模式的价格清洗器别把条款藏了 */
+      setHTML(te, TERMS_EN);
+      setHTML(document.getElementById('mx233zh'), TERMS_ZH);
+      var sum=document.getElementById('mx233sum'); setText(sum, Z?'用户协议':'Terms of Use');
+      var pv=document.getElementById('mx197priv');
+      if(pv){
+        var box=pv.querySelector('.box'); if(box){ box.setAttribute('data-keepcjk','1'); setHTML(box, Z?PRIV_ZH:PRIV_EN); }
+        var s=pv.querySelector('summary'); setText(s, Z?'隐私政策':'Privacy Policy');
+      }
+      var tb=document.getElementById('tBrand'); setText(tb, Z?'Good Q · 好问':'Good Q');
+      /* 进了命盘以后左上角有「返回修改」按钮，正好压在品牌名上 —— 这时品牌名让位 */
+      if(tb){ var s1=document.getElementById('step1'); var off=!!(s1 && s1.classList.contains('hide')); var v=off?'hidden':''; if(tb.style.visibility!==v) tb.style.visibility=v; }
+      var ab=document.querySelector('#mx203me .ab');
+      setHTML(ab, Z?'Good Q · goodq.app<br>传统历法内容，仅供参考与自省':'Good Q · goodq.app<br>Traditional calendrical content, for reflection only');
+    }catch(e){}
+  }
+  try{
+    var css=document.createElement('style'); css.id='mx258css';
+    /* 桌面宽屏：「Good Q · 首页」按钮挪到左下角，不再和左上角的「返回修改」叠在一起 */
+    css.textContent='#mx253home{top:auto !important;bottom:18px !important}';
+    document.head.appendChild(css);
+  }catch(e){}
+  if(document.readyState!=='loading') apply(); else document.addEventListener('DOMContentLoaded', apply);
+  setInterval(apply, 1500);
 })();
 </script>
 
