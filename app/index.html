@@ -36757,7 +36757,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
     zh:{
       title:'完整命盘 · 会员',
       lead:'这几块是这套盘里最花功夫的部分。免费版照旧：今日五行与节律、每日一问、基本命盘与日主、感情与合盘。',
-      items:['未来 12 个月：流年流月，每个月的节律','命运蓝图：整体格局 → 十年大运 → 流年，财运、事业、身体提醒都在里面',
+      items:['每日一问：每天 3 卦（免费版每天 1 卦）','未来 12 个月：流年流月，每个月的节律','命运蓝图：整体格局 → 十年大运 → 流年，财运、事业、身体提醒都在里面',
              '六大主题深读：婚姻、官职、财富、名望、健康、六亲','铁板神数 · 十三法，每个号头都带完整算式','以后新加的会员内容自动包含'],
       m:'按月 · 免费 3 天，之后 $9.99/月',
       y:'按年 · 免费 3 天，之后 $79.99/年（省 33%）',
@@ -36765,7 +36765,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
       manage:'管理订阅 / 取消',
       device:'在哪台设备上付款，就在哪台设备上解锁。换了手机或浏览器，请用「管理订阅」确认订阅还在。',
       free:'① 你是谁 · 本命底盘 —— 永久免费',
-      freed:'每日一问、四柱基本盘也一直免费。',
+      freed:'每日一问每天 1 卦、四柱基本盘也一直免费。',
       thanks:'已解锁，谢谢你 🌿',
       locked:'🔒 这一块是会员内容',
       unlock:'免费试用 3 天解锁',
@@ -36774,7 +36774,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
     en:{
       title:'The full reading · Plus',
       lead:'These are the parts that took the most work. Still free: today\u2019s elements and rhythm, the daily question, your basic chart and day master, love and two-chart readings.',
-      items:['The next 12 months: the rhythm of every month','Your life blueprint: overall pattern \u2192 ten-year cycles \u2192 each year, with money, work and body notes',
+      items:['The daily question: 3 casts a day (free: 1 a day)','The next 12 months: the rhythm of every month','Your life blueprint: overall pattern \u2192 ten-year cycles \u2192 each year, with money, work and body notes',
              'Six deep dives: marriage, status, wealth, reputation, health, family','Tieban Shenshu \u2014 thirteen methods, every number with its arithmetic','New Plus content included as it is added'],
       m:'Monthly · 3 days free, then $9.99/mo',
       y:'Yearly · 3 days free, then $79.99/yr (save 33%)',
@@ -36782,7 +36782,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
       manage:'Manage or cancel subscription',
       device:'Unlocks on the device and browser you paid on. On a new phone or browser, use “Manage subscription” to check it is still active.',
       free:'Who you are — always free',
-      freed:'The daily question and your four pillars stay free.',
+      freed:'One daily question a day and your four pillars stay free.',
       thanks:'Unlocked. Thank you 🌿',
       locked:'🔒 This part is in Plus',
       unlock:'Unlock · 3 days free',
@@ -37004,6 +37004,75 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
   }catch(e){}
   if(document.readyState!=='loading') apply(); else document.addEventListener('DOMContentLoaded', apply);
   setInterval(apply, 1500);
+})();
+</script>
+
+<script>
+(function(){ /* __mx259 网页版每日一问：每天第 1 卦免费，会员每天 3 卦（她 10-19 拍板：订阅解锁、会员每天 3 卦）
+   ① 只在浏览器里生效（plat()==='web'）；iOS / Android 壳里完全不动，仍是原来的每日一次。
+   ② 次数记在本机 zcQuota（和原额度门同一个 key），零点刷新。
+   ③ 免费额度用完：提示语保留「已用完 / used —」字样（MX251 靠它重画上一卦），下面加「会员每天 3 卦」按钮，点开 MX257 付费卡。
+   ④ 出岔子一律放行（宁可多给一卦，不让人卡住）。 */
+  if(window.__mx259) return; window.__mx259=1;
+  function plat(){ try{ return (window.Capacitor && Capacitor.getPlatform) ? Capacitor.getPlatform() : 'web'; }catch(e){ return 'web'; } }
+  if(plat()!=='web') return;
+  var FREE=1, PLUS=3;
+  function zh(){ try{ return (typeof lang!=='undefined') ? lang==='zh' : true; }catch(e){ return true; } }
+  function paid(){ try{ return /^cs_(live|test)_/.test(localStorage.getItem('mx257_web_paid_v1')||''); }catch(e){ return false; } }
+  function lim(){ return paid()?PLUS:FREE; }
+  function load(){ try{ var x=localStorage.getItem('zcQuota'); return x?JSON.parse(x):{}; }catch(e){ return {}; } }
+  function save(v){ try{ localStorage.setItem('zcQuota', JSON.stringify(v)); }catch(e){} }
+  function used(){ var q=load(), t=new Date().toDateString(); return q.d===t ? (q.n||0) : 0; }
+  window.__mx259left=function(){ return Math.max(0, lim()-used()); };
+  function payBtn(z, small){
+    return '<button type="button" onclick="window.__mx257open&&window.__mx257open()" style="margin-top:9px;border:0;border-radius:14px;padding:'+(small?'8px 14px;font-size:13.5px':'11px 18px;font-size:14.5px')+';font-weight:700;color:#fff;background:#C0704A;font-family:inherit;cursor:pointer">'
+      +(z?'会员每天 3 卦 · 免费试用 3 天':'Plus: 3 casts a day · 3 days free')+'</button>';
+  }
+  function usedHTML(){
+    var z=zh(), p=paid();
+    var head = p ? (z?'今日 3 卦已用完 🔒 0 点刷新，明天见。':'Today’s 3 casts are used — resets at midnight.')
+                 : (z?'今日免费一卦已用完 🔒 0 点刷新。':'Today’s free cast is used — resets at midnight.');
+    var more = p ? '' :
+      '<div style="font-size:.86em;line-height:1.8;margin-top:6px">'+(z?'成为会员，每天可以问 3 卦，还解锁流年流月、命运蓝图、六大主题和铁板神数。':'Plus gives you 3 casts a day, and unlocks the 12-month rhythm, life blueprint, six deep dives and Tieban Shenshu.')+'</div>'+payBtn(z,false);
+    return '<div style="padding:12px;font-size:.88em;text-align:center"><div style="opacity:.8">'+head+'</div>'+more+'</div>';
+  }
+  function boot(){
+    if(typeof window.zcAsk!=='function' || typeof _zcAskCore!=='function'){ return setTimeout(boot,250); }
+    if(window.zcAsk.__mx259) return;
+    var orig=window.zcAsk;
+    var w=function(cat,sub){
+      try{
+        var z=zh(), today=new Date().toDateString(), q=load(), n=(q.d===today?(q.n||0):0);
+        if(n>=lim()){ var o=document.getElementById('zcOut'); if(o) o.innerHTML=usedHTML(); if(!paid() && window.__mx257open) setTimeout(function(){ try{ window.__mx257open(); }catch(e){} }, 350); return; }
+        save({d:today,n:n+1});
+        _zcAskCore(cat,sub);
+        if(window._zcLast){ window._zcLast._day=today;
+          var subs=window.ZC_SUB&&ZC_SUB[cat], sb=subs&&subs[sub||0];
+          try{ zcStore('zcLastAsk',{key:zcKey(window._zcLast),day:today,label:sb?(z?sb[0]:sb[1]):cat}); }catch(e){} }
+      }catch(e){ try{ return orig.apply(this,arguments); }catch(_){ } }
+    };
+    w.__mx259=1; window.zcAsk=w; try{ zcAsk=w; }catch(e){}
+  }
+  try{ var cs=document.createElement('style'); cs.textContent='#zcDailySeal{display:none !important}'+'html[data-tdq="term"] #mx257ov{background:rgba(5,8,7,.96) !important}'; document.head.appendChild(cs); }catch(e){}
+  function seal(){
+    try{
+      var old=document.getElementById('zcDailySeal'); var el=document.getElementById('mx259seal');
+      if(!old){ if(el) el.remove(); return; }
+      if(!el){ el=document.createElement('div'); el.id='mx259seal'; el.setAttribute('data-keepcjk','1');
+               el.style.cssText='margin:10px 0 2px;padding:10px 12px;border-radius:12px;text-align:center;background:linear-gradient(135deg,rgba(122,91,166,.10),rgba(198,138,78,.10));border:1px solid rgba(122,91,166,.3)'; }
+      if(el.previousSibling!==old) old.parentNode.insertBefore(el, old.nextSibling);
+      var z=zh(), left=window.__mx259left(), p=paid();
+      var line = left>0
+        ? (z?('今天还可以再问 <b>'+left+'</b> 卦'):('<b>'+left+'</b> more cast'+(left>1?'s':'')+' left today'))
+        : (p ? (z?'今天的 3 卦都问过了':'All 3 of today’s casts are done') : (z?'今天免费的一卦问过了':'Today’s free cast is done'));
+      var html='<div style="font-weight:800;font-size:.88em">🔮 '+line+'</div>'
+        +(!p && left<=0 ? payBtn(z,true) : '')
+        +'<div style="font-size:.72em;opacity:.55;margin-top:4px">'+(z?'0 点刷新。同一件事别反复问，换一件事再问。':'Resets at midnight. Ask about a new matter rather than re-asking the same one.')+'</div>';
+      if(el.__mx259!==html){ el.innerHTML=html; el.__mx259=html; }
+    }catch(e){}
+  }
+  boot();
+  setInterval(function(){ boot(); seal(); }, 700);
 })();
 </script>
 
