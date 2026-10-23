@@ -447,6 +447,7 @@ html:not([data-tdq="term"]) .card{ border-radius:22px !important; box-shadow:0 3
         <div class="fcol"><span class="fl" id="lMin"></span><input id="imin" inputmode="numeric" placeholder="30"></div>
         <div class="fcol wide"><span class="fl" id="lSex"></span><select id="isex"></select></div>
       </div>
+      <div class="inrow" id="mx260bpRow"><div class="fcol wide" style="flex:1 1 100%;min-width:0"><span class="fl" id="mx260bpL">出生地区（可选）</span><select id="ibp" style="width:100%;max-width:100%"></select><span id="mx260bpH" style="display:block;font-size:11.5px;line-height:1.6;opacity:.6;margin-top:3px"></span></div></div>
       <button class="btn primary" id="tNext1" onclick="goVoice()"></button>
       <p class="honest" id="tPriv"></p>
     </div>
@@ -525,7 +526,7 @@ html:not([data-tdq="term"]) .card{ border-radius:22px !important; box-shadow:0 3
   function rid(e){ return [e.y,e.m,e.d,e.h,e.mi,e.sex].join('-'); }
   function dtxt(e){
     var L=t();
-    return e.y+'-'+pad(e.m)+'-'+pad(e.d)+'  '+pad(e.h)+':'+pad(e.mi)+' · '+(e.sex==='m'?L.m:L.f);
+    return e.y+'-'+pad(e.m)+'-'+pad(e.d)+'  '+pad(e.h)+':'+pad(e.mi)+' · '+(e.sex==='m'?L.m:L.f)+((e.bp&&window.mx260RegName)?' · '+mx260RegName(e.bp):'');
   }
 
   /* ── 存一条（goVoice 成功之后调）───────────────────── */
@@ -561,7 +562,7 @@ html:not([data-tdq="term"]) .card{ border-radius:22px !important; box-shadow:0 3
   }
   function fill(e){
     function set(id,v){ var el=document.getElementById(id); if(el) el.value=v; }
-    set('iy',e.y); set('im',e.m); set('id',e.d); set('ih',e.h); set('imin',e.mi);
+    set('iy',e.y); set('im',e.m); set('id',e.d); set('ih',e.h); set('imin',e.mi); set('ibp',e.bp||'');
     _pre=e.sex; _touched=false;
     watchSex(); resex();
   }
@@ -683,7 +684,7 @@ html:not([data-tdq="term"]) .card{ border-radius:22px !important; box-shadow:0 3
           function num(id){ var el=document.getElementById(id); return el?(+el.value||0):0; }
           var sx=document.getElementById('isex');
           save({ y:num('iy'), m:num('im'), d:num('id'), h:num('ih'), mi:num('imin'),
-                 sex:(sx&&sx.value==='m')?'m':'f' });
+                 sex:(sx&&sx.value==='m')?'m':'f', bp:((document.getElementById('ibp')||{}).value||'') });
           render();
         }
       }catch(e){}
@@ -2147,7 +2148,7 @@ function renderVoices(){$("voiceList").innerHTML=T().voices.map(([id,n,d])=>
 function pickVoice(id){voice=id;renderVoices();}
 function goVoice(){const y=+$("iy").value,m=+$("im").value,d=+$("id").value,h=+$("ih").value;
   if(!y||!m||!d||isNaN(h)||y<1901||y>2099){alert(lang==="en"?"Please complete date & time (1901–2099).":"请填写完整的出生年月日时(1901–2099)");return;}
-  chart=computeChart(y,m,d,h,$("isex").value==="m");chart.meta={y,m,d,h};
+  chart=(window.mx260Chart?mx260Chart(y,m,d,h,$("isex").value==="m"):computeChart(y,m,d,h,$("isex").value==="m"));chart.meta={y,m,d,h,bp:(window.mx260BP?mx260BP():"")};
   $("step1").classList.add("hide");$("step2").classList.remove("hide");window.scrollTo(0,0);}
 function buildAll(){if(!voice)voice="meta";
   $("step2").classList.add("hide");$("step3").classList.remove("hide");renderAll();__mx179_bar();__mx180_layout();window.scrollTo(0,0);}
@@ -28491,7 +28492,7 @@ body{padding-bottom:calc(34px + env(safe-area-inset-bottom,0px)) !important;}
   // 若已排盘，用精确算法重排并刷新
   try{
     if(window.chart && chart.meta){ var mt=chart.meta;
-      if(typeof mt.y!=='undefined'){ window.chart=Object.assign(computeChart(mt.y,mt.mo||mt.m,mt.d,mt.h,chart.male), {meta:mt}); }
+      if(typeof mt.y!=='undefined'){ window.chart=Object.assign(((mt.bp&&window.mx260Chart)?mx260Chart(mt.y,mt.mo||mt.m,mt.d,mt.h,chart.male):computeChart(mt.y,mt.mo||mt.m,mt.d,mt.h,chart.male)), {meta:mt}); }
     }
     if(typeof buildAll==='function' && document.getElementById('step3') && !document.getElementById('step3').classList.contains('hide')) buildAll();
   }catch(e){}
@@ -32941,6 +32942,8 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
   function nowGZ(){
     var d=new Date();
     var y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate(), hh=d.getHours();
+    /* MX260：跟 zcAsk 同一口径（真太阳时；「替别人问」时按对方城市） */
+    try{ if(typeof zcSolarNow==='function'){ var _s=zcSolarNow(d); y=_s.y; m=_s.m; day=_s.d; hh=_s.hh; } }catch(e){}
     var a=Math.floor((14-m)/12), yy=y+4800-a, mm=m+12*a-3;
     var jdn=day+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)
             -Math.floor(yy/100)+Math.floor(yy/400)-32045;
@@ -32960,6 +32963,7 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
 
     var d=new Date(), Y=d.getFullYear();
     var yz=((Y-4)%12+12)%12, M=d.getMonth()+1, D=d.getDate();
+    try{ if(typeof zcSolarNow==='function'){ var _s2=zcSolarNow(d); Y=_s2.y; yz=((Y-4)%12+12)%12; M=_s2.m; D=_s2.d; } }catch(e){} /* MX260 */
 
     /* 六爻侧 —— 梅花时间起卦（先天卦序） */
     var upN=((yz+1+M+D)%8)||8, loN=((yz+1+M+D+g.hz+1)%8)||8;
@@ -37073,6 +37077,223 @@ html[data-tdq="term"] .lt-r{background:rgba(232,139,139,.18);color:#E88B8B}
   }
   boot();
   setInterval(function(){ boot(); seal(); }, 700);
+})();
+</script>
+
+<script>
+/* === MX260 时区：
+   ① 每日一问「替别人问」——选对方所在城市，就按对方当地（真太阳时）起卦；默认仍是「我自己」，每次打开都回到默认。
+   ② 出生地区（可选）——在中国以外出生的人，节气交界按出生地时间比对，年柱/月柱/大运才准；不选＝老算法一字不改。
+   幂等守卫 __mx260 === */
+(function(){
+  if(window.__mx260) return; window.__mx260=1;
+  function ZH(){ return (typeof lang!=='undefined')?lang==='zh':true; }
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function el(id){ return document.getElementById(id); }
+
+  /* ── 时区工具（Intl 自带历史夏令时）────────────────── */
+  function tzOff(tz, ms){ /* 该时刻 tz 比 UTC 快多少分钟 */
+    try{
+      var f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric'});
+      var p={}; f.formatToParts(new Date(ms)).forEach(function(x){ p[x.type]=x.value; });
+      var asUTC=Date.UTC(+p.year,+p.month-1,+p.day,(+p.hour)%24,+p.minute);
+      return Math.round((asUTC-Math.floor(ms/60000)*60000)/60000);
+    }catch(e){ return null; }
+  }
+  function wallToUTC(tz,y,m,d,h,mi){
+    var g=Date.UTC(y,m-1,d,h,mi||0), o1=tzOff(tz,g); if(o1==null) return null;
+    var t=g-o1*60000, o2=tzOff(tz,t); if(o2!=null && o2!==o1) t=g-o2*60000;
+    return t;
+  }
+  window.mx260wallToUTC=wallToUTC;
+
+  /* ── ① 替别人问：城市（中文、英文、经度、时区）────── */
+  var CITIES=[
+    ['洛杉矶','Los Angeles',-118.2,'America/Los_Angeles'],['旧金山','San Francisco',-122.4,'America/Los_Angeles'],
+    ['圣何塞','San Jose',-121.9,'America/Los_Angeles'],['圣地亚哥','San Diego',-117.2,'America/Los_Angeles'],
+    ['尔湾','Irvine',-117.8,'America/Los_Angeles'],['萨克拉门托','Sacramento',-121.5,'America/Los_Angeles'],
+    ['西雅图','Seattle',-122.3,'America/Los_Angeles'],['波特兰','Portland',-122.7,'America/Los_Angeles'],
+    ['拉斯维加斯','Las Vegas',-115.1,'America/Los_Angeles'],['凤凰城','Phoenix',-112.1,'America/Phoenix'],
+    ['丹佛','Denver',-105.0,'America/Denver'],['盐湖城','Salt Lake City',-111.9,'America/Denver'],
+    ['达拉斯','Dallas',-96.8,'America/Chicago'],['休斯顿','Houston',-95.4,'America/Chicago'],
+    ['奥斯汀','Austin',-97.7,'America/Chicago'],['芝加哥','Chicago',-87.6,'America/Chicago'],
+    ['纽约','New York',-74.0,'America/New_York'],['波士顿','Boston',-71.1,'America/New_York'],
+    ['费城','Philadelphia',-75.2,'America/New_York'],['华盛顿','Washington DC',-77.0,'America/New_York'],
+    ['亚特兰大','Atlanta',-84.4,'America/New_York'],['迈阿密','Miami',-80.2,'America/New_York'],
+    ['奥兰多','Orlando',-81.4,'America/New_York'],['檀香山','Honolulu',-157.9,'Pacific/Honolulu'],
+    ['温哥华','Vancouver',-123.1,'America/Vancouver'],['多伦多','Toronto',-79.4,'America/Toronto'],
+    ['蒙特利尔','Montreal',-73.6,'America/Toronto'],['墨西哥城','Mexico City',-99.1,'America/Mexico_City'],
+    ['伦敦','London',-0.1,'Europe/London'],['巴黎','Paris',2.3,'Europe/Paris'],
+    ['柏林','Berlin',13.4,'Europe/Berlin'],['阿姆斯特丹','Amsterdam',4.9,'Europe/Amsterdam'],
+    ['北京','Beijing',116.4,'Asia/Shanghai'],['上海','Shanghai',121.5,'Asia/Shanghai'],
+    ['广州','Guangzhou',113.3,'Asia/Shanghai'],['深圳','Shenzhen',114.1,'Asia/Shanghai'],
+    ['杭州','Hangzhou',120.2,'Asia/Shanghai'],['南京','Nanjing',118.8,'Asia/Shanghai'],
+    ['成都','Chengdu',104.1,'Asia/Shanghai'],['重庆','Chongqing',106.6,'Asia/Shanghai'],
+    ['武汉','Wuhan',114.3,'Asia/Shanghai'],['西安','Xi\'an',108.9,'Asia/Shanghai'],
+    ['天津','Tianjin',117.2,'Asia/Shanghai'],['厦门','Xiamen',118.1,'Asia/Shanghai'],
+    ['香港','Hong Kong',114.2,'Asia/Hong_Kong'],['澳门','Macau',113.5,'Asia/Macau'],
+    ['台北','Taipei',121.5,'Asia/Taipei'],['新加坡','Singapore',103.8,'Asia/Singapore'],
+    ['吉隆坡','Kuala Lumpur',101.7,'Asia/Kuala_Lumpur'],['曼谷','Bangkok',100.5,'Asia/Bangkok'],
+    ['东京','Tokyo',139.7,'Asia/Tokyo'],['首尔','Seoul',127.0,'Asia/Seoul'],
+    ['悉尼','Sydney',151.2,'Australia/Sydney'],['墨尔本','Melbourne',145.0,'Australia/Melbourne'],
+    ['珀斯','Perth',115.9,'Australia/Perth'],['奥克兰','Auckland',174.8,'Pacific/Auckland']
+  ];
+  function city(i){ i=+i; return (isFinite(i)&&CITIES[i])?CITIES[i]:null; }
+  var forOn=false, forIdx=0;
+  try{ var sv=localStorage.getItem('mx260_for'); if(sv!=null && city(sv)) forIdx=+sv; }catch(e){}
+  window.mx260For=function(){ return forOn?city(forIdx):null; };
+
+  /* 起卦经度：替别人问时用对方城市经度（真太阳时口径与 r37-T1 完全一致） */
+  function hookLon(){
+    if(typeof window.zcLon!=='function' || window.zcLon.__mx260) return;
+    var _lon=window.zcLon;
+    var w=function(){ var c=window.mx260For(); if(c) return c[2]; return _lon.apply(this,arguments); };
+    w.__mx260=1; window.zcLon=w; try{ zcLon=w; }catch(e){}
+  }
+  hookLon();
+
+  var CSS='#mx260row{font-size:.8em;margin:8px 0 2px;padding:8px 10px;border-radius:10px;background:rgba(128,128,128,.07)}'
+    +'#mx260row .r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}'
+    +'#mx260row button{padding:4px 11px;border-radius:14px;border:1px solid rgba(128,128,128,.35);background:none;color:inherit;cursor:pointer;font-size:1em}'
+    +'#mx260row button.on{background:#e8a13c;border-color:#e8a13c;color:#fff;font-weight:700}'
+    +'#mx260row select{padding:4px 8px;border-radius:8px;border:1px solid rgba(128,128,128,.35);background:rgba(128,128,128,.05);color:inherit;font-size:1em;max-width:100%}'
+    +'#mx260row .h{opacity:.6;font-size:.92em;line-height:1.6;margin-top:5px}'
+    +'#mx260note{font-size:.8em;margin:4px 0 6px;padding:5px 9px;border-radius:8px;background:rgba(232,161,60,.12);color:inherit}';
+  var st=document.createElement('style'); st.id='mx260css'; st.textContent=CSS; (document.head||document.documentElement).appendChild(st);
+
+  function localNow(tz){
+    var zh=ZH();
+    try{ return new Date().toLocaleString(zh?'zh-CN':'en-US',{timeZone:tz,month:zh?'numeric':'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:!zh}); }
+    catch(e){ return ''; }
+  }
+  function rowHTML(){
+    var zh=ZH(), c=city(forIdx);
+    var h='<div class="r"><span>'+(zh?'给谁问：':'Asking for:')+'</span>'
+      +'<button data-x="me" class="'+(forOn?'':'on')+'">'+(zh?'我自己':'Myself')+'</button>'
+      +'<button data-x="other" class="'+(forOn?'on':'')+'">'+(zh?'替别人问':'Someone elsewhere')+'</button></div>';
+    if(forOn){
+      h+='<div class="r" style="margin-top:6px"><span>'+(zh?'对方在：':'They are in:')+'</span><select id="mx260city">';
+      CITIES.forEach(function(x,i){ h+='<option value="'+i+'"'+(i===forIdx?' selected':'')+'>'+esc(zh?x[0]:x[1])+'</option>'; });
+      h+='</select><span id="mx260clock" style="opacity:.75">'+(c?(zh?'当地 ':'local ')+esc(localNow(c[3])):'')+'</span></div>'
+        +'<div class="h">'+(zh?'卦会按对方那边的当地时间起（按经度校正成真太阳时）。传统上多按“起念问的那一刻、问的人所在地”，两种都有人用，你按自己的习惯选。'
+                              :'The cast will use their local time (corrected to true solar time for that city). Traditionally many readers use the asker’s own place and moment; both are in use, so pick what fits your practice.')+'</div>';
+    }
+    return h;
+  }
+  function paintRow(){
+    var r=el('mx260row'); if(!r) return;
+    r.innerHTML=rowHTML();
+    Array.prototype.forEach.call(r.querySelectorAll('button[data-x]'),function(b){
+      b.onclick=function(){ forOn=(b.getAttribute('data-x')==='other'); paintRow(); };
+    });
+    var s=el('mx260city');
+    if(s) s.onchange=function(){ forIdx=+s.value||0; try{ localStorage.setItem('mx260_for',''+forIdx); }catch(e){} paintRow(); };
+  }
+  function injectRow(){
+    try{
+      if(el('mx260row')) return;
+      var anchor=el('zcCityRow'), note=el('zcNote');
+      if(!anchor && !note) return;
+      var d=document.createElement('div'); d.id='mx260row';
+      if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(d, anchor.nextSibling);
+      else note.parentNode.insertBefore(d, note);
+      paintRow();
+    }catch(e){}
+  }
+  /* 起完卦，结果顶上标一行：按哪里的时间起的 */
+  function markOut(){
+    try{
+      var out=el('zcOut'), c=window.mx260For(); if(!out) return;
+      var old=el('mx260note');
+      if(!c){ if(old) old.parentNode.removeChild(old); return; }
+      if(!out.firstChild) return;
+      var zh=ZH(), txt=(zh?'🌍 按 '+c[0]+' 当地时间起卦（当地 '+localNow(c[3])+'）':'🌍 Cast on '+c[1]+' local time ('+localNow(c[3])+' there)');
+      if(old && old.parentNode===out && old.getAttribute('data-k')===txt) return;
+      if(old) old.parentNode.removeChild(old);
+      var n=document.createElement('div'); n.id='mx260note'; n.setAttribute('data-k',txt); n.textContent=txt;
+      out.insertBefore(n, out.firstChild);
+    }catch(e){}
+  }
+  function watchOut(){
+    var out=el('zcOut'); if(!out || out.__mx260) return; out.__mx260=1;
+    try{ new MutationObserver(function(){ if(!el('mx260note') || el('mx260note').parentNode!==out) markOut(); }).observe(out,{childList:true}); }catch(e){}
+  }
+  setInterval(function(){ var k=el('mx260clock'), c=window.mx260For(); if(k&&c) k.textContent=(ZH()?'当地 ':'local ')+localNow(c[3]); },30000);
+
+  /* ── ② 出生地区（可选）────────────────────────────── */
+  var REG=[
+    ['', '未选（按北京时间）','Not set (China time)'],
+    ['America/Los_Angeles','美国太平洋（加州、西雅图等）','US Pacific (CA, WA, OR, NV)'],
+    ['America/Denver','美国山地（科罗拉多、犹他）','US Mountain (CO, UT…)'],
+    ['America/Phoenix','美国亚利桑那','US Arizona'],
+    ['America/Chicago','美国中部（德州、芝加哥等）','US Central (TX, IL…)'],
+    ['America/New_York','美国东部（纽约、佛州等）','US Eastern (NY, FL, GA…)'],
+    ['America/Anchorage','美国阿拉斯加','US Alaska'],
+    ['Pacific/Honolulu','美国夏威夷','US Hawaii'],
+    ['America/Vancouver','加拿大西部（温哥华）','Canada West (Vancouver)'],
+    ['America/Toronto','加拿大东部（多伦多）','Canada East (Toronto, Montreal)'],
+    ['America/Mexico_City','墨西哥（墨西哥城）','Mexico (Mexico City)'],
+    ['America/Sao_Paulo','巴西（圣保罗）','Brazil (São Paulo)'],
+    ['Europe/London','英国、爱尔兰','UK & Ireland'],
+    ['Europe/Paris','西欧中欧（法德意西荷）','Central Europe (FR, DE, IT, ES, NL…)'],
+    ['Europe/Moscow','俄罗斯（莫斯科）','Russia (Moscow)'],
+    ['Asia/Hong_Kong','香港','Hong Kong'],
+    ['Asia/Macau','澳门','Macau'],
+    ['Asia/Taipei','台湾','Taiwan'],
+    ['Asia/Tokyo','日本','Japan'],
+    ['Asia/Seoul','韩国','South Korea'],
+    ['Asia/Singapore','新加坡','Singapore'],
+    ['Asia/Kuala_Lumpur','马来西亚','Malaysia'],
+    ['Asia/Bangkok','泰国、越南、柬埔寨','Thailand, Vietnam, Cambodia'],
+    ['Asia/Manila','菲律宾','Philippines'],
+    ['Asia/Kolkata','印度','India'],
+    ['Australia/Sydney','澳洲东部（悉尼、墨尔本）','Australia East (Sydney, Melbourne)'],
+    ['Australia/Perth','澳洲西部（珀斯）','Australia West (Perth)'],
+    ['Pacific/Auckland','新西兰','New Zealand']
+  ];
+  window.mx260RegName=function(tz){ for(var i=0;i<REG.length;i++) if(REG[i][0]===tz) return ZH()?REG[i][1].replace(/（.*$/,''):REG[i][2].replace(/ \(.*$/,''); return ''; };
+  window.mx260BP=function(){ var s=el('ibp'); return s?(s.value||''):''; };
+  function paintBP(){
+    var s=el('ibp'), l=el('mx260bpL'), hnt=el('mx260bpH'); if(!s) return;
+    var zh=ZH(), v=s.value||s.getAttribute('data-v')||'';
+    s.innerHTML=REG.map(function(r){ return '<option value="'+r[0]+'">'+esc(zh?r[1]:r[2])+'</option>'; }).join('');
+    s.value=v;
+    if(l) l.textContent=zh?'出生地区（可选）':'Born where? (optional)';
+    if(hnt) hnt.textContent=zh?'在中国以外出生请选一下：节气交界前后出生的人，年柱、月柱和大运才会准。':'Born outside China? Pick the region so the year and month pillars stay right for births near a solar-term change.';
+  }
+  window.mx260Chart=function(y,m,d,h,male){
+    var tz=window.mx260BP();
+    if(!tz || tz==='Asia/Shanghai') return computeChart(y,m,d,h,male);
+    try{
+      var mi=+((el('imin')||{}).value)||0;
+      var u=wallToUTC(tz,y,m,d,h,mi); if(u==null) return computeChart(y,m,d,h,male);
+      var b=new Date(u+8*3600000);
+      var L=computeChart(y,m,d,h,male), B=computeChart(b.getUTCFullYear(),b.getUTCMonth()+1,b.getUTCDate(),b.getUTCHours(),male);
+      if(!L||!B||!L.P||!B.P) return L||B;
+      /* 年柱、月柱、大运：节气按出生那一刻的真实时间比；日柱、时柱：仍按出生地墙钟（老规矩） */
+      var P=[B.P[0],B.P[1],L.P[2],L.P[3]];
+      var counts=[0,0,0,0,0]; P.forEach(function(a){ counts[SE[a[1]]]++; counts[BE[a[2]]]++; });
+      return {P:P,ds:L.ds,counts:counts,luck:B.luck,startAge:B.startAge,male:male,bp:tz};
+    }catch(e){ return computeChart(y,m,d,h,male); }
+  };
+
+  /* ── 语言切换后重画 ─────────────────────────────── */
+  function hookLang(){
+    if(typeof window.toggleLang!=='function' || window.toggleLang.__mx260) return;
+    var _t=window.toggleLang;
+    var w=function(){ var r=_t.apply(this,arguments); setTimeout(function(){ try{ paintBP(); paintRow(); markOut(); }catch(e){} },70); return r; };
+    for(var k in _t){ try{ w[k]=_t[k]; }catch(e){} }
+    w.__mx260=1; window.toggleLang=w;
+  }
+
+  var lastZH=null;
+  function langCheck(){ try{ var z=ZH(); if(z!==lastZH){ lastZH=z; paintBP(); paintRow(); markOut(); } }catch(e){} }
+  function tick(){ try{ hookLon(); injectRow(); watchOut(); langCheck(); }catch(e){} }
+  setInterval(langCheck,800);
+  paintBP();
+  tick();
+  [120,400,1000,2000].forEach(function(ms){ setTimeout(function(){ tick(); hookLang(); paintBP(); },ms); });
+  document.addEventListener('click',function(){ setTimeout(tick,90); },true);
 })();
 </script>
 
